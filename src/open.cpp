@@ -9,23 +9,13 @@ int main(int argc, char** argv) {
 
     Send Send(display);
 
-    DisableInput();
-
     Send.Hold(XK_Super_L);
     Send.Press(XK_5);
     Send.Release(XK_Super_L);
-    EnableInput();
+    Send.EnableInput();
 
     XCloseDisplay(display); // Close the display connection
     return 0;
-}
-
-void DisableInput() {
-    k::ExecCmd(DisableCMD);
-}
-
-void EnableInput() {
-    k::ExecCmd(EnableCMD);
 }
 
 // Copyright (c) 2023, Maxamilian Kidd-May
