@@ -2,6 +2,14 @@
 #define Kopenopen
 
 #include "config.hpp"
+#include "send.hpp"
+
+#include <std-k.hpp>
+#include <chrono>
+#include <thread>
+
+void DisableInput();
+void EnableInput();
 
 #endif
 

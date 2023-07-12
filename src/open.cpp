@@ -1,7 +1,31 @@
 #include "../inc/open.hpp"
 
 int main(int argc, char** argv) { 
-	return 0;
+    Display* display = XOpenDisplay(NULL); // Open the default display connection
+    if (!display) {
+        printf("Error opening the display.\n"); // If the display connection fails, print an error message
+        return 1; // Return with an error code
+    }
+
+    Send Send(display);
+
+    DisableInput();
+
+    Send.Hold(XK_Super_L);
+    Send.Press(XK_5);
+    Send.Release(XK_Super_L);
+    EnableInput();
+
+    XCloseDisplay(display); // Close the display connection
+    return 0;
+}
+
+void DisableInput() {
+    k::ExecCmd(DisableCMD);
+}
+
+void EnableInput() {
+    k::ExecCmd(EnableCMD);
 }
 
 // Copyright (c) 2023, Maxamilian Kidd-May

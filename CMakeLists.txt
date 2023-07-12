@@ -30,6 +30,11 @@ target_include_directories(open
     SHARED ${std-k_SOURCE_DIR}/inc
 )
 
+target_sources(open
+    PRIVATE src/open.cpp
+    PRIVATE src/send.cpp
+)
+
 install(
     TARGETS open
     DESTINATION /usr/local/bin/
@@ -38,6 +43,8 @@ install(
 link_directories(${std-k_BINARY_DIR})
 target_link_libraries(open
     PUBLIC std-k
+    PUBLIC X11
+    PUBLIC Xtst
 )
 
 # Copyright (c) 2023, Maxamilian Kidd-May
