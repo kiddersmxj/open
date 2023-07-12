@@ -8,9 +8,6 @@
 #include <chrono>
 #include <thread>
 
-void DisableInput();
-void EnableInput();
-
 #endif
 
 // Copyright (c) 2023, Maxamilian Kidd-May

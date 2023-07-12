@@ -28,6 +28,14 @@ void Send::Release(KeySym key) {
     XTestFakeKeyEvent(display, Key, False, 0);
 }
 
+void Send::DisableInput() {
+    k::ExecCmd(DisableCMD);
+}
+
+void Send::EnableInput() {
+    k::ExecCmd(EnableCMD);
+}
+
 // Copyright (c) 2023, Maxamilian Kidd-May
 // All rights reserved.
 

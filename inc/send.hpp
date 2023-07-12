@@ -1,6 +1,9 @@
 #ifndef Ksendsend
 #define Ksendsend
 
+#include "config.hpp"
+
+#include <std-k.hpp>
 #include <algorithm>
 #include <vector>
 #include <iostream>
@@ -15,6 +18,8 @@ class Send {
         void Press(KeySym Key);
         void Hold(KeySym Key);
         void Release(KeySym Key);
+        void DisableInput();
+        void EnableInput();
     private:
         Display* display;
         std::vector<KeySym> Keys;
