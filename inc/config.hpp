@@ -1,6 +1,7 @@
 #ifndef Kconfig
 #define Kconfig                                
 
+#include <std-k.hpp>
 #include <iostream>
 
 /* const std::string DisableCMD = R"(xinput --enable "$(xinput list | grep "AT" | awk -F ' ' '{print $7}' | awk -F '=' '{print $2}') ")"; */
@@ -11,6 +12,18 @@
 
 const std::string EnableCMD = "xinput --enable 11";
 const std::string DisableCMD = "xinput --disable 11";
+
+const std::string ProgramName = "open";
+const std::string Version = "0.0.0";
+const std::string UsageNotes = R"(usage: open
+options:
+    -h / --help         show help and usage notes
+    -v / --version      print version and exit
+)";
+
+const std::string GetAvailableTagsCmd = "xsetroot -name \"fsignal:6\"; sleep 1";
+const std::string AvailableTagsFilePath = HOME + "/.cache/dwm/emptytags.txt";
+const std::string Launch = "st -e";
 
 #endif
 

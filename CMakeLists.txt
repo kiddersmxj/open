@@ -33,6 +33,7 @@ target_include_directories(open
 target_sources(open
     PRIVATE src/open.cpp
     PRIVATE src/send.cpp
+    PRIVATE src/screen.cpp
 )
 
 install(

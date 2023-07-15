@@ -2,11 +2,16 @@
 #define Kopenopen
 
 #include "config.hpp"
-#include "send.hpp"
+#include "screen.hpp"
 
 #include <std-k.hpp>
 #include <chrono>
 #include <thread>
+#include <getopt.h>
+
+void Usage();
+void Usage(std::string Message);
+void PrintVersion();
 
 #endif
 
