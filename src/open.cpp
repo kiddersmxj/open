@@ -64,8 +64,6 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    /* Screen.Spawn(9); */
-
     return 0;
 }
 

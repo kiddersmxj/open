@@ -21,7 +21,7 @@ options:
     -v / --version      print version and exit
 )";
 
-const std::string GetAvailableTagsCmd = "xsetroot -name \"fsignal:6\"; sleep 1";
+const std::string GetAvailableTagsCmd = "xsetroot -name \"fsignal:6\"; sleep 0.1";
 const std::string AvailableTagsFilePath = HOME + "/.cache/dwm/emptytags.txt";
 const std::string Launch = "st -e";
 
