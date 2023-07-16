@@ -14,12 +14,14 @@ namespace S {
             void Add(std::string ProgramPath);
             void Spawn(int Tag);
             void Spawn();
+            void Ranger(std::string Dir);
         private:
             std::vector<int> AvailableTags;
             std::vector<std::string> Programs;
             std::vector<KeySym> TagKeys = { XK_1, XK_2, XK_3, XK_4, XK_5, XK_6, XK_7, XK_7, XK_8, XK_9 };
             void RefreshAvailable();
             void Moveto(int Tag);
+            void Launch(std::string Program);
     };
 }
 

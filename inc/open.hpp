@@ -8,6 +8,8 @@
 #include <chrono>
 #include <thread>
 #include <getopt.h>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 void Usage();
 void Usage(std::string Message);

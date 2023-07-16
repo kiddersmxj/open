@@ -1,16 +1,21 @@
 #!/bin/bash
 
 BashInstall="/usr/local/bin"
-LaunchFile="OpenLaunchCmd.sh"
+OpenLaunchFile="OpenLaunchCmd.sh"
+RangerLaunchFile="RangerLaunchCmd.sh"
 InstallPath="$(pwd)"
 
 if [[ $1 != "" ]]; then
     ARGS="-D$1"
 fi
 
-if [ ! -f $BashInstall/$LaunchFile ]; then
+if [ ! -f $BashInstall/$OpenLaunchFile ]; then
     echo "Please install supporting scripts"
-    sudo ln -sf $InstallPath/scripts/$LaunchFile $BashInstall/$LaunchFile
+    sudo ln -sf $InstallPath/scripts/$OpenLaunchFile $BashInstall/$OpenLaunchFile
+fi
+if [ ! -f $BashInstall/$RangerLaunchFile ]; then
+    echo "Please install supporting scripts"
+    sudo ln -sf $InstallPath/scripts/$RangerLaunchFile $BashInstall/$RangerLaunchFile
 fi
 
 cmake -B build $ARGS && cmake --build build && sudo cmake --install build

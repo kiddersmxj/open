@@ -24,6 +24,9 @@ void S::Screen::Add(std::string ProgramPath) {
 
 void S::Screen::Spawn(int Tag) {
     Moveto(Tag);
+
+    for(std::string Program: Programs)
+        Launch(Program);
 }
 
 void S::Screen::Spawn() {
@@ -59,6 +62,16 @@ void S::Screen::Moveto(int Tag) {
     Send.EnableInput();
 
     XCloseDisplay(display); // Close the display connection
+}
+
+void S::Screen::Ranger(std::string Dir) {
+    std::string Cmd = RLaunch1 + Dir + RLaunch2;
+    k::ExecCmd(Cmd);
+}
+
+void S::Screen::Launch(std::string Program) {
+    std::string Cmd = Launch1 + Program + Launch2;
+    k::ExecCmd(Cmd);
 }
 
 // Copyright (c) 2023, Maxamilian Kidd-May

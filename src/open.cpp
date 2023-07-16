@@ -3,20 +3,22 @@
 int main(int argc, char** argv) { 
     int HelpFlag = 0;
     int VersionFlag = 0;
-    std::string Name;
+    std::string ProjectName;
+    std::string FileName;
     int opt;
 
     // Get opt option defenitions
     struct option Opts[] = {
         { "help", no_argument, &HelpFlag, 1 },
         { "version", no_argument, &VersionFlag, 1 },
-        { "name", required_argument, NULL, 'n' },
+        { "project-name", required_argument, NULL, 'p' },
+        { "file-name", required_argument, NULL, 'f' },
         { 0 }
     };
 
     // Infinite loop, to be broken when we are done parsing options
     while (1) {
-        opt = getopt_long(argc, argv, "hvn:", Opts, 0);
+        opt = getopt_long(argc, argv, "hvp:f:", Opts, 0);
 
         // A return value of -1 indicates that there are no more options
         if (opt == -1) {
@@ -34,8 +36,11 @@ int main(int argc, char** argv) {
         case 'v':
             VersionFlag = 1;
             break;
-        case 'n':
-            Name = optarg;
+        case 'p':
+            ProjectName = optarg;
+            break;
+        case 'f':
+            FileName = optarg;
             break;
         case '?':
             Usage();
@@ -53,15 +58,32 @@ int main(int argc, char** argv) {
     if(VersionFlag) {
     }
 
-    try {
-        S::Screen Screen;
-        Screen.Spawn();
-    } catch (const char *Message) {
-        Usage(Message);
-        return 1;
-    } catch (std::string Message) {
-        Usage(Message);
-        return 1;
+    if(ProjectName != "" && FileName == "") {
+        try {
+            S::Screen Screen;
+            Screen.Ranger("/home/kidders/devel/hamza");
+            Screen.Spawn();
+        } catch (const char *Message) {
+            Usage(Message);
+            return 1;
+        } catch (std::string Message) {
+            Usage(Message);
+            return 1;
+        }
+    } else if(ProjectName != "" && FileName != "") {
+        try {
+            S::Screen Screen;
+            Screen.Add("vim /home/kidders/devel/hamza/src/hamza.cpp");
+            Screen.Add("vim /home/kidders/devel/hamza/inc/hamza.hpp");
+            Screen.Ranger("/home/kidders/devel/hamza");
+            Screen.Spawn();
+        } catch (const char *Message) {
+            Usage(Message);
+            return 1;
+        } catch (std::string Message) {
+            Usage(Message);
+            return 1;
+        }
     }
 
     return 0;
