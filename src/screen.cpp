@@ -29,7 +29,7 @@ void S::Screen::Spawn(int Tag) {
 void S::Screen::Spawn() {
     int Tag = AvailableTags.front();
     std::cout << Tag << std::endl;
-    Moveto(Tag);
+    Spawn(Tag);
 }
 
 void S::Screen::Moveto(int Tag) {
