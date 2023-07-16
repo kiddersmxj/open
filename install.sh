@@ -1,7 +1,16 @@
 #!/bin/bash
 
+BashInstall="/usr/local/bin"
+LaunchFile="OpenLaunchCmd.sh"
+InstallPath="$(pwd)"
+
 if [[ $1 != "" ]]; then
     ARGS="-D$1"
+fi
+
+if [ ! -f $BashInstall/$LaunchFile ]; then
+    echo "Please install supporting scripts"
+    sudo ln -sf $InstallPath/scripts/$LaunchFile $BashInstall/$LaunchFile
 fi
 
 cmake -B build $ARGS && cmake --build build && sudo cmake --install build
