@@ -13,8 +13,8 @@
 
 class Send {
     public:
-        Send(Display* display);
-        /* ~Send(); */
+        Send();
+        ~Send();
         void Press(KeySym Key);
         void Hold(KeySym Key);
         void Release(KeySym Key);

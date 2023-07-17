@@ -1,13 +1,21 @@
 #include "../inc/send.hpp"
 
-Send::Send(Display* display) : display(display) {}
+Send::Send() {
+    display = XOpenDisplay(NULL); // Open the default display connection
+    if (!display) {
+        printf("Error opening the display.\n"); // If the display connection fails, print an error message
+        throw "Error openning the display";
+    }
+}
 
-/* Send::~Send() { */
-/*     for(auto key: Keys) { */
-/*         KeyCode Key = XKeysymToKeycode(display, key); */
-/*         XTestFakeKeyEvent(display, Key, False, 0); */
-/*     } */
-/* } */
+Send::~Send() {
+    for(auto key: Keys) {
+        std::cout << key;;
+        KeyCode Key = XKeysymToKeycode(display, key);
+        XTestFakeKeyEvent(display, Key, False, 0);
+    }
+    XCloseDisplay(display); // Close the display connection
+}
 
 void Send::Press(KeySym key) {
     Keys.push_back(key);

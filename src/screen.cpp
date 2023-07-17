@@ -44,13 +44,8 @@ void S::Screen::Moveto(int Tag) {
     }
     TagKey = TagKeys.at(Tag);
 
-    Display* display = XOpenDisplay(NULL); // Open the default display connection
-    if (!display) {
-        printf("Error opening the display.\n"); // If the display connection fails, print an error message
-        throw "Error openning the display";
-    }
 
-    Send Send(display);
+    Send Send;
 
     Send.Hold(XK_Super_L);
     if(Alt)
@@ -60,8 +55,6 @@ void S::Screen::Moveto(int Tag) {
         Send.Release(XK_Alt_L);
     Send.Release(XK_Super_L);
     Send.EnableInput();
-
-    XCloseDisplay(display); // Close the display connection
 }
 
 void S::Screen::Ranger(std::string Dir) {
