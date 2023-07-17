@@ -10,7 +10,6 @@ Send::Send() {
 
 Send::~Send() {
     for(auto key: Keys) {
-        std::cout << key;;
         KeyCode Key = XKeysymToKeycode(display, key);
         XTestFakeKeyEvent(display, Key, False, 0);
     }

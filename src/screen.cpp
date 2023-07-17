@@ -10,9 +10,10 @@ void S::Screen::RefreshAvailable() {
     for(std::string Tag: k::ReadFileLines(AvailableTagsFilePath)) {
         if(Tag == "") throw "No available tags";
         int T = std::atoi(std::move(Tag.c_str()));
-        //remove less than tag 4 (3 for zero based)
-        T++;
-        if(T > 4)
+        /* if(T > 6) */
+        /*     T++; */
+        // Remove less than tag 3 (2 for zero based)
+        if(T > 2)
             AvailableTags.push_back(T);
     }
     if(AvailableTags.size() == 0) throw "No available tags";
@@ -31,7 +32,12 @@ void S::Screen::Spawn(int Tag) {
 
 void S::Screen::Spawn() {
     int Tag = AvailableTags.front();
-    std::cout << Tag << std::endl;
+    // Tag int does not really correspond to actual tag no
+    int ActualTag = Tag + 1;
+    if(ActualTag > 9) {
+        ActualTag++;
+    }
+    std::cout << ActualTag << std::endl;
     Spawn(Tag);
 }
 
@@ -39,7 +45,7 @@ void S::Screen::Moveto(int Tag) {
     KeySym TagKey;
     bool Alt = 0;
     if(Tag >= 9) {
-        Tag -= 10;
+        Tag -= 9;
         Alt = 1;
     }
     TagKey = TagKeys.at(Tag);
