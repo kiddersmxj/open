@@ -28,6 +28,8 @@ void S::Screen::Spawn(int Tag) {
 
     for(std::string Program: Programs)
         Launch(Program);
+    for(std::string Ranger: Rangers)
+        k::ExecCmd(Ranger);
 }
 
 void S::Screen::Spawn() {
@@ -65,11 +67,11 @@ void S::Screen::Moveto(int Tag) {
 
 void S::Screen::Ranger(std::string Dir) {
     std::string Cmd = RLaunch1 + Dir + RLaunch2;
-    k::ExecCmd(Cmd);
+    Rangers.push_back(Cmd);
 }
 
 void S::Screen::Launch(std::string Program) {
-    std::string Cmd = Launch1 + Program + Launch2;
+    std::string Cmd = Launch1 + "vim " + Program + Launch2;
     k::ExecCmd(Cmd);
 }
 

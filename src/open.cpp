@@ -60,9 +60,12 @@ int main(int argc, char** argv) {
 
     if(ProjectName != "" && FileName == "") {
         try {
+            Project Project(ProjectName);
             S::Screen Screen;
-            Screen.Ranger("/home/kidders/devel/hamza");
+            Screen.Ranger(Project.Directory());
+#ifndef TEST
             Screen.Spawn();
+#endif
         } catch (const char *Message) {
             Usage(Message);
             return 1;
@@ -72,11 +75,17 @@ int main(int argc, char** argv) {
         }
     } else if(ProjectName != "" && FileName != "") {
         try {
+            Project Project(ProjectName, FileName);
             S::Screen Screen;
-            Screen.Add("vim /home/kidders/devel/hamza/src/hamza.cpp");
-            Screen.Add("vim /home/kidders/devel/hamza/inc/hamza.hpp");
-            Screen.Ranger("/home/kidders/devel/hamza");
+            for(std::string File: Project.Files()) {
+                Screen.Add(File);
+            }
+            /* Screen.Add("vim /home/kidders/devel/hamza/src/hamza.cpp"); */
+            /* Screen.Add("vim /home/kidders/devel/hamza/inc/hamza.hpp"); */
+            /* Screen.Ranger("/home/kidders/devel/hamza"); */
+#ifndef TEST
             Screen.Spawn();
+#endif
         } catch (const char *Message) {
             Usage(Message);
             return 1;

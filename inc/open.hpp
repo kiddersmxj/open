@@ -3,6 +3,7 @@
 
 #include "config.hpp"
 #include "screen.hpp"
+#include "project.hpp"
 
 #include <std-k.hpp>
 #include <chrono>

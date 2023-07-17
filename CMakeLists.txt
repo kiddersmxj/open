@@ -37,12 +37,19 @@ target_sources(open
     PRIVATE src/open.cpp
     PRIVATE src/send.cpp
     PRIVATE src/screen.cpp
+    PRIVATE src/project.cpp
 )
 
 install(
     TARGETS open
     DESTINATION /usr/local/bin/
 )
+
+if(test)
+    message("Testing enabled")
+    add_compile_definitions(TEST)
+endif()
+
 
 link_directories(${std-k_BINARY_DIR})
 target_link_libraries(open

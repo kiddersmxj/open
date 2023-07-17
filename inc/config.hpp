@@ -35,6 +35,8 @@ const std::string Launch2 = R"( > /dev/null 2>&1 &)";
 const std::string RLaunch1 = R"(st -e RangerLaunchCmd.sh )"; // Add program in middle of two
 const std::string RLaunch2 = R"( > /dev/null 2>&1 &)";
 
+const std::string DevelPath = getenv("devel");
+
 #endif
 
 // Copyright (c) 2023, Maxamilian Kidd-May
