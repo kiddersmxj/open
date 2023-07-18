@@ -9,11 +9,14 @@
 
 class Project {
     public:
+        Project();
         Project(std::string Proj);
         Project(std::string Proj, std::string File);
         /* ~Project(); */
         std::string Directory();
         std::vector<std::string> Files();
+        std::vector<std::string> List();
+        std::vector<std::string> List(std::string D);
     private:
         std::string Dir;
         std::vector<std::string> Fs;

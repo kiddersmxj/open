@@ -60,6 +60,11 @@ int main(int argc, char** argv) {
 
     if(ProjectName != "" && FileName == "") {
         try {
+            if(ProjectName == "list") {
+                Project Project;
+                k::VPrint(Project.List());
+                return EXIT_SUCCESS;
+            }
             Project Project(ProjectName);
             S::Screen Screen;
             Screen.Ranger(Project.Directory());
@@ -75,6 +80,11 @@ int main(int argc, char** argv) {
         }
     } else if(ProjectName != "" && FileName != "") {
         try {
+            if(FileName == "list") {
+                Project Project(ProjectName);
+                k::VPrint(Project.List(Project.Directory()));
+                return EXIT_SUCCESS;
+            }
             Project Project(ProjectName, FileName);
             S::Screen Screen;
             for(std::string File: Project.Files()) {

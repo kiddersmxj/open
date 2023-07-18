@@ -11,6 +11,8 @@ Project::Project(std::string Proj) {
     }
 }
 
+Project::Project() {};
+
 Project::Project(std::string Proj, std::string File) {
     for (const auto & entry : fs::directory_iterator(DevelPath)) {
         if(Proj == entry.path().filename()) {
@@ -51,6 +53,28 @@ std::string Project::Directory() {
 
 std::vector<std::string> Project::Files() {
     return Fs;
+}
+
+std::vector<std::string> Project::List(std::string D) {
+    std::vector<std::string> L;
+    for(const auto & entry : fs::directory_iterator(D)) {
+        L.push_back(entry.path().filename());
+    }
+    for(const auto & entry : fs::directory_iterator(D + "/inc")) {
+        L.push_back(entry.path().filename());
+    }
+    for(const auto & entry : fs::directory_iterator(D + "/src")) {
+        L.push_back(entry.path().filename());
+    }
+    return L;
+}
+
+std::vector<std::string> Project::List() {
+    std::vector<std::string> L;
+    for(const auto & entry : fs::directory_iterator(DevelPath)) {
+        L.push_back(entry.path().filename());
+    }
+    return L;
 }
 
 // Copyright (c) 2023, Maxamilian Kidd-May
