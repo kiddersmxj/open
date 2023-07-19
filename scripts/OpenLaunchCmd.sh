@@ -2,4 +2,4 @@
 
 source ~/.bashrc
 "$@"
-exec "$SHELL"
+# exec "$SHELL"
