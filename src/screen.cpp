@@ -39,7 +39,7 @@ void S::Screen::Spawn() {
     if(ActualTag > 9) {
         ActualTag++;
     }
-    std::cout << ActualTag << std::endl;
+    /* std::cout << ActualTag << std::endl; */
     Spawn(Tag);
 }
 

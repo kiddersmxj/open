@@ -3,6 +3,7 @@
 int main(int argc, char** argv) { 
     int HelpFlag = 0;
     int VersionFlag = 0;
+    int RangerFlag = 0;
     std::string ProjectName;
     std::string FileName;
     int opt;
@@ -13,12 +14,13 @@ int main(int argc, char** argv) {
         { "version", no_argument, &VersionFlag, 1 },
         { "project-name", required_argument, NULL, 'p' },
         { "file-name", required_argument, NULL, 'f' },
+        { "ranger", no_argument, &RangerFlag, 1 },
         { 0 }
     };
 
     // Infinite loop, to be broken when we are done parsing options
     while (1) {
-        opt = getopt_long(argc, argv, "hvp:f:", Opts, 0);
+        opt = getopt_long(argc, argv, "hvp:f:r", Opts, 0);
 
         // A return value of -1 indicates that there are no more options
         if (opt == -1) {
@@ -42,6 +44,9 @@ int main(int argc, char** argv) {
         case 'f':
             FileName = optarg;
             break;
+        case 'r':
+            RangerFlag = 1;
+            break;
         case '?':
             Usage();
             return EXIT_FAILURE;
@@ -62,7 +67,7 @@ int main(int argc, char** argv) {
         try {
             if(ProjectName == "list") {
                 Project Project;
-                k::VPrint(Project.List());
+                /* k::VPrint(Project.List()); */
                 return EXIT_SUCCESS;
             }
             Project Project(ProjectName);
@@ -90,9 +95,8 @@ int main(int argc, char** argv) {
             for(std::string File: Project.Files()) {
                 Screen.Add(File);
             }
-            /* Screen.Add("vim /home/kidders/devel/hamza/src/hamza.cpp"); */
-            /* Screen.Add("vim /home/kidders/devel/hamza/inc/hamza.hpp"); */
-            /* Screen.Ranger("/home/kidders/devel/hamza"); */
+            if(RangerFlag)
+                Screen.Ranger(Project.Directory());
 #ifndef TEST
             Screen.Spawn();
 #endif

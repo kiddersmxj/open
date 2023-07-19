@@ -44,7 +44,7 @@ Project::Project(std::string Proj, std::string File) {
             }
         }
     }
-    k::VPrint(Fs);
+    /* k::VPrint(Fs); */
 }
 
 std::string Project::Directory() {

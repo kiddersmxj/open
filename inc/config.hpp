@@ -15,10 +15,14 @@ const std::string DisableCMD = "xinput --disable 11";
 
 const std::string ProgramName = "open";
 const std::string Version = "0.0.0";
-const std::string UsageNotes = R"(usage: open
+const std::string UsageNotes = R"(usage: open [ -p project ] [ -f file in project ]
+            [ -r ] [ -h/-v ]
 options:
     -h / --help         show help and usage notes
     -v / --version      print version and exit
+    -p / --project-name specifiy project name (pass '-p list' to list)
+    -f . --file-name    specifiy file name (pass '-p name -f list' to list)
+    -r / --ranger       also spawn a ranger client in passed project dir
 )";
 
 const std::string GetAvailableTagsCmd = "xsetroot -name \"fsignal:6\"; sleep 0.1";
