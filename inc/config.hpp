@@ -28,11 +28,6 @@ options:
 const std::string GetAvailableTagsCmd = "xsetroot -name \"fsignal:6\"; sleep 0.1";
 const std::string AvailableTagsFilePath = HOME + "/.cache/dwm/emptytags.txt";
 
-// Launch commands to not leave orphaned terminal after program close
-/* const std::string Launch1 = "{ nohup st -e "; */
-/* const std::string Launch2 = " & } &"; */
-
-// Launch commands to leave orphaned termianl after program close
 const std::string Launch1 = R"(st -e OpenLaunchCmd.sh )"; // Add program in middle of two
 const std::string Launch2 = R"( > /dev/null 2>&1 &)";
 
