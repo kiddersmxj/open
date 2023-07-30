@@ -4,6 +4,8 @@ int main(int argc, char** argv) {
     int HelpFlag = 0;
     int VersionFlag = 0;
     int RangerFlag = 0;
+    int HereFlag = 0;
+    int DestroyFlag = 0;
     std::string ProjectName;
     std::string FileName;
     int opt;
@@ -15,12 +17,14 @@ int main(int argc, char** argv) {
         { "project-name", required_argument, NULL, 'p' },
         { "file-name", required_argument, NULL, 'f' },
         { "ranger", no_argument, &RangerFlag, 1 },
+        { "tag-here", no_argument, &HereFlag, 1 },
+        { "destory", no_argument, &DestroyFlag, 1 },
         { 0 }
     };
 
     // Infinite loop, to be broken when we are done parsing options
     while (1) {
-        opt = getopt_long(argc, argv, "hvp:f:r", Opts, 0);
+        opt = getopt_long(argc, argv, "hvp:f:rtd", Opts, 0);
 
         // A return value of -1 indicates that there are no more options
         if (opt == -1) {
@@ -47,6 +51,12 @@ int main(int argc, char** argv) {
         case 'r':
             RangerFlag = 1;
             break;
+        case 't':
+            HereFlag = 1;
+            break;
+        case 'd':
+            DestroyFlag = 1;
+            break;
         case '?':
             Usage();
             return EXIT_FAILURE;
@@ -63,18 +73,22 @@ int main(int argc, char** argv) {
     if(VersionFlag) {
     }
 
+    int CurrentTag = -1;
     if(ProjectName != "" && FileName == "") {
         try {
             if(ProjectName == "list") {
                 Project Project;
-                /* k::VPrint(Project.List()); */
+                k::VPrint(Project.List());
                 return EXIT_SUCCESS;
             }
             Project Project(ProjectName);
             S::Screen Screen;
             Screen.Ranger(Project.Directory());
 #ifndef TEST
-            Screen.Spawn();
+            if(HereFlag)
+                Screen.Spawn(CurrentTag);
+            else
+                Screen.Spawn();
 #endif
         } catch (const char *Message) {
             Usage(Message);
@@ -98,7 +112,10 @@ int main(int argc, char** argv) {
             if(RangerFlag)
                 Screen.Ranger(Project.Directory());
 #ifndef TEST
-            Screen.Spawn();
+            if(HereFlag)
+                Screen.Spawn(CurrentTag);
+            else
+                Screen.Spawn();
 #endif
         } catch (const char *Message) {
             Usage(Message);
@@ -108,6 +125,9 @@ int main(int argc, char** argv) {
             return 1;
         }
     }
+
+    if(DestroyFlag)
+        k::ExecCmd("kill -4 " + std::to_string(getppid()));
 
     return 0;
 }

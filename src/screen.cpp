@@ -24,7 +24,8 @@ void S::Screen::Add(std::string ProgramPath) {
 }
 
 void S::Screen::Spawn(int Tag) {
-    Moveto(Tag);
+    if(Tag > 0)
+        Moveto(Tag);
 
     for(std::string Program: Programs)
         Launch(Program);

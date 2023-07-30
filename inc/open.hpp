@@ -9,6 +9,7 @@
 #include <chrono>
 #include <thread>
 #include <getopt.h>
+#include <unistd.h>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
