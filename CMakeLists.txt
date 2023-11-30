@@ -41,7 +41,7 @@ endif()
 
 
 target_link_libraries(open
-    PUBLIC std-k
+    PRIVATE std-k
     PUBLIC X11
     PUBLIC Xtst
     PRIVATE nlohmann_json::nlohmann_json
