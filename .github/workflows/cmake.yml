@@ -21,6 +21,6 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@master
     - name: Install deps
-      run: sudo apt-get install libxtst-dev
+      run: sudo apt-get install libxtst-dev; git clone https://github.com/kiddersmxj/std-k; cd std-k; bash install.sh; cd ..
     - name: Build using CMake
       run: ./install.sh
