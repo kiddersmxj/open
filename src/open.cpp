@@ -73,6 +73,20 @@ int main(int argc, char** argv) {
     if(VersionFlag) {
     }
 
+    std::vector<std::string> Out;
+    std::string Path = std::filesystem::current_path().string();
+    k::SplitString(Path, '/', Out, true);
+
+    if(ProjectName == "") {
+        Project Project;
+        for(std::string P: Project.List()) {
+            if(P == Out.back()) {
+                ProjectName = Out.back();
+                break;
+            }
+        }
+    }
+
     int CurrentTag = -1;
     if(ProjectName != "" && FileName == "") {
         try {
