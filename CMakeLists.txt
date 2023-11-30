@@ -4,18 +4,6 @@ cmake_minimum_required (VERSION 3.11)
 
 include(FetchContent)
 
-set(FETCHCONTENT_UPDATES_DISCONNECTED TRUE)
-FetchContent_Declare(std-k
-  GIT_REPOSITORY https://github.com/kiddersmxj/std-k
-  GIT_TAG main
-)
- 
-FetchContent_GetProperties(std-k)
-if(NOT std-k_POPULATED)
-  FetchContent_Populate(std-k)
-  add_subdirectory(${std-k_SOURCE_DIR} ${std-k_BINARY_DIR})
-endif()
-
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)
 FetchContent_MakeAvailable(json)
  
@@ -28,9 +16,10 @@ project(open
 
 add_executable(open src/open.cpp)
 
+find_package(std-k REQUIRED)
+
 target_include_directories(open 
     PRIVATE inc
-    SHARED ${std-k_SOURCE_DIR}/inc
 )
 
 target_sources(open
@@ -51,7 +40,6 @@ if(test)
 endif()
 
 
-link_directories(${std-k_BINARY_DIR})
 target_link_libraries(open
     PUBLIC std-k
     PUBLIC X11
