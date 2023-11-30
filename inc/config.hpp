@@ -23,6 +23,8 @@ options:
     -p / --project-name specifiy project name (pass '-p list' to list)
     -f . --file-name    specifiy file name (pass '-p name -f list' to list)
     -r / --ranger       also spawn a ranger client in passed project dir
+    -t / --tag-here     opens request on current tag
+    -d / --destroy      destorys window (lowkey useless possibly except for hamza)
 )";
 
 const std::string GetAvailableTagsCmd = "xsetroot -name \"fsignal:6\"; sleep 0.1";
