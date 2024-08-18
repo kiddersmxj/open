@@ -13,7 +13,7 @@ void S::Screen::RefreshAvailable() {
         /* if(T > 6) */
         /*     T++; */
         // Remove less than tag 3 (2 for zero based)
-        if(T > 2)
+        if(T > FIRSTTAG)
             AvailableTags.push_back(T);
     }
     if(AvailableTags.size() == 0) throw "No available tags";

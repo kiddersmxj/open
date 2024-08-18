@@ -10,6 +10,9 @@
 /* const std::string EnableCMD = "~/devel/bin-k/bash/keyboardctrl.sh 1"; */
 /* const std::string DisableCMD = "~/devel/bin-k/bash/keyboardctrl.sh 0"; */
 
+// Always minus 1 from tag you want to be first
+#define FIRSTTAG 3
+
 const std::string EnableCMD = "xinput --enable 11";
 const std::string DisableCMD = "xinput --disable 11";
 
