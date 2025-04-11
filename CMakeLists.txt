@@ -1,14 +1,22 @@
-cmake_minimum_required (VERSION 3.11)
- 
-# --- Fetch libs --------------------------------------------------------------
+cmake_minimum_required(VERSION 3.26)
+cmake_policy(VERSION 3.26)
+
+
 
 include(FetchContent)
+set(FETCHCONTENT_UPDATES_DISCONNECTED TRUE)
 
-FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)
+# --- Fetch external libraries ------------------------------------------------
+#
+# Fetch the updated JSON library (v3.12.0) via URL.
+FetchContent_Declare(
+  json
+  URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
+)
+
+# Make both dependencies available.
 FetchContent_MakeAvailable(json)
  
-# ------------------------------------------------------------------------------
-
 project(open
     LANGUAGES CXX
     VERSION 0.0.0
