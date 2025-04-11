@@ -2,14 +2,22 @@
 
 int main(int argc, char** argv) { 
     // Command line flags initialization
-    int HelpFlag = 0;         // -h/--help flag
-    int VersionFlag = 0;      // -v/--version flag
-    int RangerFlag = 0;       // -r/--ranger flag to launch ranger file manager
-    int HereFlag = 0;         // -t/--tag-here to spawn in current tag
-    int DestroyFlag = 0;      // -d/--destroy to kill parent process
-    std::string ProjectName;  // Project name from -p/--project-name
-    std::string FileName;     // File name from -f/--file-name
-    int opt;                  // Variable for getopt parsing
+    // -h/--help flag
+    int HelpFlag = 0;
+    // -v/--version flag
+    int VersionFlag = 0;
+    // -r/--ranger flag to launch ranger file manager
+    int RangerFlag = 0;
+    // -t/--tag-here to spawn in current tag
+    int HereFlag = 0;
+    // -d/--destroy to kill parent process
+    int DestroyFlag = 0;
+    // Project name from -p/--project-name
+    std::string ProjectName;
+    // File name from -f/--file-name
+    std::string FileName;
+    // Variable for getopt parsing
+    int opt;
 
     // Long option definitions for getopt:
     // {name, has_arg, flag, val}
@@ -81,11 +89,13 @@ int main(int argc, char** argv) {
     // Get current working directory and split into components
     std::vector<std::string> Out;
     std::string Path = std::filesystem::current_path().string();
-    k::SplitString(Path, '/', Out, true);  // Split path by '/' delimiter
+    // Split path by '/' delimiter
+    k::SplitString(Path, '/', Out, true);
 
     // If no project name specified, try to infer from current directory
     if(ProjectName == "") {
-        Project Project;  // Initialize Project object
+        // Initialize Project object
+        Project Project;
         // Check if current directory matches any known project
         for(std::string P: Project.List()) {
             if(P == Out.back()) {
@@ -103,7 +113,8 @@ int main(int argc, char** argv) {
             // Special 'list' command to show available projects
             if(ProjectName == "list") {
                 Project Project;
-                k::VPrint(Project.List());  // Print project list
+                // Print project list
+                k::VPrint(Project.List());
                 return EXIT_SUCCESS;
             }
             // Initialize project and screen objects
@@ -129,7 +140,8 @@ int main(int argc, char** argv) {
             // Special 'list' command to show files in project
             if(FileName == "list") {
                 Project Project(ProjectName);
-                k::VPrint(Project.List(Project.Directory()));  // Print file list
+                // Print file list
+                k::VPrint(Project.List(Project.Directory()));
                 return EXIT_SUCCESS;
             }
             // Initialize project with specific file
@@ -158,7 +170,8 @@ int main(int argc, char** argv) {
 
     // Handle destructive flag to terminate parent process
     if(DestroyFlag)
-        k::ExecCmd("kill -4 " + std::to_string(getppid()));  // SIGILL to parent
+        // SIGILL to parent
+        k::ExecCmd("kill -4 " + std::to_string(getppid()));
 
     return 0;
 }
