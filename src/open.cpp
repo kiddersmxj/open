@@ -1,16 +1,18 @@
 #include "../inc/open.hpp"
 
 int main(int argc, char** argv) { 
-    int HelpFlag = 0;
-    int VersionFlag = 0;
-    int RangerFlag = 0;
-    int HereFlag = 0;
-    int DestroyFlag = 0;
-    std::string ProjectName;
-    std::string FileName;
-    int opt;
+    // Command line flags initialization
+    int HelpFlag = 0;         // -h/--help flag
+    int VersionFlag = 0;      // -v/--version flag
+    int RangerFlag = 0;       // -r/--ranger flag to launch ranger file manager
+    int HereFlag = 0;         // -t/--tag-here to spawn in current tag
+    int DestroyFlag = 0;      // -d/--destroy to kill parent process
+    std::string ProjectName;  // Project name from -p/--project-name
+    std::string FileName;     // File name from -f/--file-name
+    int opt;                  // Variable for getopt parsing
 
-    // Get opt option defenitions
+    // Long option definitions for getopt:
+    // {name, has_arg, flag, val}
     struct option Opts[] = {
         { "help", no_argument, &HelpFlag, 1 },
         { "version", no_argument, &VersionFlag, 1 },
@@ -22,11 +24,14 @@ int main(int argc, char** argv) {
         { 0 }
     };
 
-    // Infinite loop, to be broken when we are done parsing options
+    // Command line option parsing loop
     while (1) {
+        // Parse options using getopt_long:
+        // - "hvp:f:rtd" specifies short options (colon = requires argument)
+        // - Options structure defines long options mapping to flags
         opt = getopt_long(argc, argv, "hvp:f:rtd", Opts, 0);
 
-        // A return value of -1 indicates that there are no more options
+        // Exit loop when no more options (-1 return value)
         if (opt == -1) {
             if(HelpFlag && VersionFlag) {
                 Usage();
@@ -73,12 +78,15 @@ int main(int argc, char** argv) {
     if(VersionFlag) {
     }
 
+    // Get current working directory and split into components
     std::vector<std::string> Out;
     std::string Path = std::filesystem::current_path().string();
-    k::SplitString(Path, '/', Out, true);
+    k::SplitString(Path, '/', Out, true);  // Split path by '/' delimiter
 
+    // If no project name specified, try to infer from current directory
     if(ProjectName == "") {
-        Project Project;
+        Project Project;  // Initialize Project object
+        // Check if current directory matches any known project
         for(std::string P: Project.List()) {
             if(P == Out.back()) {
                 ProjectName = Out.back();
@@ -87,17 +95,21 @@ int main(int argc, char** argv) {
         }
     }
 
-    int CurrentTag = -1;
+    int CurrentTag = -1;  // Default tag value (will be set by window manager)
+    
+    // Handle case where only project name is specified
     if(ProjectName != "" && FileName == "") {
         try {
+            // Special 'list' command to show available projects
             if(ProjectName == "list") {
                 Project Project;
-                k::VPrint(Project.List());
+                k::VPrint(Project.List());  // Print project list
                 return EXIT_SUCCESS;
             }
-            Project Project(ProjectName);
-            S::Screen Screen;
-            Screen.Ranger(Project.Directory());
+            // Initialize project and screen objects
+            Project Project(ProjectName);  // Load specified project
+            S::Screen Screen;              // Create screen management object
+            Screen.Ranger(Project.Directory());  // Launch ranger in project dir
 #ifndef TEST
             if(HereFlag)
                 Screen.Spawn(CurrentTag);
@@ -111,17 +123,21 @@ int main(int argc, char** argv) {
             Usage(Message);
             return 1;
         }
+    // Handle case where both project and file name are specified
     } else if(ProjectName != "" && FileName != "") {
         try {
+            // Special 'list' command to show files in project
             if(FileName == "list") {
                 Project Project(ProjectName);
-                k::VPrint(Project.List(Project.Directory()));
+                k::VPrint(Project.List(Project.Directory()));  // Print file list
                 return EXIT_SUCCESS;
             }
-            Project Project(ProjectName, FileName);
+            // Initialize project with specific file
+            Project Project(ProjectName, FileName);  // Load project+file combo
             S::Screen Screen;
+            // Add all project files to screen management
             for(std::string File: Project.Files()) {
-                Screen.Add(File);
+                Screen.Add(File);  // Register each file with screen manager
             }
             if(RangerFlag)
                 Screen.Ranger(Project.Directory());
@@ -140,8 +156,9 @@ int main(int argc, char** argv) {
         }
     }
 
+    // Handle destructive flag to terminate parent process
     if(DestroyFlag)
-        k::ExecCmd("kill -4 " + std::to_string(getppid()));
+        k::ExecCmd("kill -4 " + std::to_string(getppid()));  // SIGILL to parent
 
     return 0;
 }

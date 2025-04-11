@@ -1,4 +1,4 @@
-#ifndef Kopenopen
+#ifndef Kopenopen  // Header guard to prevent multiple inclusion
 #define Kopenopen
 
 #include "config.hpp"
@@ -10,8 +10,8 @@
 #include <thread>
 #include <getopt.h>
 #include <unistd.h>
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
+#include <nlohmann/json.hpp>  // JSON parsing library
+using json = nlohmann::json;  // Namespace alias for convenience
 
 void Usage();
 void Usage(std::string Message);
