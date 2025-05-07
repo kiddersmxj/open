@@ -18,7 +18,9 @@ if [ ! -f $BashInstall/$RangerLaunchFile ]; then
     sudo ln -sf $InstallPath/scripts/$RangerLaunchFile $BashInstall/$RangerLaunchFile
 fi
 
-cmake -B build $ARGS && cmake --build build && sudo cmake --install build
+mkdir -p build
+script -q -c "cmake -B build $ARGS && cmake --build build && sudo cmake --install build" | tee build/build.log
+
 
 # Copyright (c) 2023, Maxamilian Kidd-May
 # All rights reserved.
