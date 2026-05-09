@@ -8,7 +8,7 @@ void S::Screen::RefreshAvailable() {
     k::ExecCmd(GetAvailableTagsCmd);
     AvailableTags.clear();
     for(std::string Tag: k::ReadFileLines(AvailableTagsFilePath)) {
-        if(Tag == "") throw "No available tags";
+        if(Tag == "") continue;
         int T = std::atoi(std::move(Tag.c_str()));
         /* if(T > 6) */
         /*     T++; */
@@ -16,7 +16,6 @@ void S::Screen::RefreshAvailable() {
         if(T > FIRSTTAG)
             AvailableTags.push_back(T);
     }
-    if(AvailableTags.size() == 0) throw "No available tags";
 }
 
 void S::Screen::Add(std::string ProgramPath) {
@@ -34,6 +33,7 @@ void S::Screen::Spawn(int Tag) {
 }
 
 void S::Screen::Spawn() {
+    if(AvailableTags.size() == 0) throw "No available tags";
     int Tag = AvailableTags.front();
     // Tag int does not really correspond to actual tag no
     int ActualTag = Tag + 1;
