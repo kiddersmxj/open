@@ -16,6 +16,9 @@
 // Gap between launches so windows map in order and the last one is master
 #define MAPDELAY 150
 
+// Wait for the last window to map and take focus before zooming it to master
+#define ZOOMDELAY 400
+
 const std::string EnableCMD = "xinput --enable 11";
 const std::string DisableCMD = "xinput --disable 11";
 

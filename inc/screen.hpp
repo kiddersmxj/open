@@ -24,6 +24,7 @@ namespace S {
             std::vector<KeySym> TagKeys = { XK_1, XK_2, XK_3, XK_4, XK_5, XK_6, XK_7, XK_8, XK_9 };
             void RefreshAvailable();
             void Moveto(int Tag);
+            void Zoom();
             void Launch(std::string Program);
     };
 }

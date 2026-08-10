@@ -34,6 +34,11 @@ void S::Screen::Spawn(int Tag) {
         k::Sleep(MAPDELAY);
         k::ExecCmd(Claude);
     }
+    // Claude window is launched last so it holds focus, zoom it to master
+    if(Claudes.size() > 0) {
+        k::Sleep(ZOOMDELAY);
+        Zoom();
+    }
 }
 
 void S::Screen::Spawn() {
@@ -66,6 +71,15 @@ void S::Screen::Moveto(int Tag) {
     Send.Press(TagKey);
     if(Alt)
         Send.Release(XK_Alt_L);
+    Send.Release(XK_Super_L);
+    Send.EnableInput();
+}
+
+void S::Screen::Zoom() {
+    Send Send;
+
+    Send.Hold(XK_Super_L);
+    Send.Press(XK_Return);
     Send.Release(XK_Super_L);
     Send.EnableInput();
 }
