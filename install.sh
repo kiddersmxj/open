@@ -3,6 +3,7 @@
 BashInstall="/usr/local/bin"
 OpenLaunchFile="OpenLaunchCmd.sh"
 RangerLaunchFile="RangerLaunchCmd.sh"
+ClaudeLaunchFile="ClaudeLaunchCmd.sh"
 InstallPath="$(pwd)"
 
 if [[ $1 != "" ]]; then
@@ -16,6 +17,10 @@ fi
 if [ ! -f $BashInstall/$RangerLaunchFile ]; then
     echo "Please install supporting scripts"
     sudo ln -sf $InstallPath/scripts/$RangerLaunchFile $BashInstall/$RangerLaunchFile
+fi
+if [ ! -f $BashInstall/$ClaudeLaunchFile ]; then
+    echo "Please install supporting scripts"
+    sudo ln -sf $InstallPath/scripts/$ClaudeLaunchFile $BashInstall/$ClaudeLaunchFile
 fi
 
 mkdir -p build

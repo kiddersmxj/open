@@ -13,19 +13,23 @@
 // Always minus 1 from tag you want to be first
 #define FIRSTTAG 3
 
+// Gap between launches so windows map in order and the last one is master
+#define MAPDELAY 150
+
 const std::string EnableCMD = "xinput --enable 11";
 const std::string DisableCMD = "xinput --disable 11";
 
 const std::string ProgramName = "open";
 const std::string Version = "0.0.0";
 const std::string UsageNotes = R"(usage: open [ -p project ] [ -f file in project ]
-            [ -r ] [ -h/-v ]
+            [ -r ] [ -c ] [ -h/-v ]
 options:
     -h / --help         show help and usage notes
     -v / --version      print version and exit
     -p / --project-name specifiy project name (pass '-p list' to list)
     -f / --file-name    specifiy file name (pass '-p name -f list' to list)
     -r / --ranger       also spawn a ranger client in passed project dir
+    -c / --claude       open project with claude ('-cc' for clc, '-cr' for clr)
     -t / --tag-here     opens request on current tag
     -d / --destroy      destorys window (lowkey useless possibly except for hamza)
 )";
@@ -38,6 +42,9 @@ const std::string Launch2 = R"( > /dev/null 2>&1 &)";
 
 const std::string RLaunch1 = R"(st -e RangerLaunchCmd.sh )"; // Add program in middle of two
 const std::string RLaunch2 = R"( > /dev/null 2>&1 &)";
+
+const std::string CLaunch1 = R"(st -e ClaudeLaunchCmd.sh )"; // Add dir (+ alias) in middle of two
+const std::string CLaunch2 = R"( > /dev/null 2>&1 &)";
 
 const std::string DevelPath = getenv("devel");
 

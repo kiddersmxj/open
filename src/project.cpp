@@ -9,6 +9,7 @@ Project::Project(std::string Proj) {
             break;
         }
     }
+    if(Dir == "") throw "No such project: " + Proj;
 }
 
 Project::Project() {};
@@ -20,6 +21,7 @@ Project::Project(std::string Proj, std::string File) {
             break;
         }
     }
+    if(Dir == "") throw "No such project: " + Proj;
     bool Found = 0;
     for(const auto & entry : fs::directory_iterator(Dir)) {
         if(File == entry.path().filename()) {

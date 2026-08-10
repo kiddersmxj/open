@@ -16,6 +16,8 @@ int main(int argc, char** argv) {
     std::string ProjectName;
     // File name from -f/--file-name
     std::string FileName;
+    // Claude alias from -c/--claude ('-cc' -> clc, '-cr' -> clr)
+    std::string ClaudeAlias;
     // Variable for getopt parsing
     int opt;
 
@@ -27,6 +29,7 @@ int main(int argc, char** argv) {
         { "project-name", required_argument, NULL, 'p' },
         { "file-name", required_argument, NULL, 'f' },
         { "ranger", no_argument, &RangerFlag, 1 },
+        { "claude", optional_argument, NULL, 'c' },
         { "tag-here", no_argument, &HereFlag, 1 },
         { "destory", no_argument, &DestroyFlag, 1 },
         { 0 }
@@ -35,9 +38,10 @@ int main(int argc, char** argv) {
     // Command line option parsing loop
     while (1) {
         // Parse options using getopt_long:
-        // - "hvp:f:rtd" specifies short options (colon = requires argument)
+        // - "hvp:f:rtdc::" specifies short options (colon = requires argument,
+        //   double colon = optional argument that must be attached, eg '-cc')
         // - Options structure defines long options mapping to flags
-        opt = getopt_long(argc, argv, "hvp:f:rtd", Opts, 0);
+        opt = getopt_long(argc, argv, "hvp:f:rtdc::", Opts, 0);
 
         // Exit loop when no more options (-1 return value)
         if (opt == -1) {
@@ -63,6 +67,16 @@ int main(int argc, char** argv) {
             break;
         case 'r':
             RangerFlag = 1;
+            break;
+        case 'c':
+            ClaudeAlias = "cl";
+            if(optarg) {
+                if(std::string(optarg) != "c" && std::string(optarg) != "r") {
+                    Usage("Unknown claude alias: -c" + std::string(optarg));
+                    return EXIT_FAILURE;
+                }
+                ClaudeAlias += optarg;
+            }
             break;
         case 't':
             HereFlag = 1;
@@ -120,7 +134,10 @@ int main(int argc, char** argv) {
             // Initialize project and screen objects
             Project Project(ProjectName);  // Load specified project
             S::Screen Screen;              // Create screen management object
-            Screen.Ranger(Project.Directory());  // Launch ranger in project dir
+            if(ClaudeAlias != "")
+                Screen.Claude(Project.Directory(), ClaudeAlias);  // Terminal + claude instead
+            else
+                Screen.Ranger(Project.Directory());  // Launch ranger in project dir
 #ifndef TEST
             if(HereFlag)
                 Screen.Spawn(CurrentTag);
@@ -153,6 +170,8 @@ int main(int argc, char** argv) {
             }
             if(RangerFlag)
                 Screen.Ranger(Project.Directory());
+            if(ClaudeAlias != "")
+                Screen.Claude(Project.Directory(), ClaudeAlias);
 #ifndef TEST
             if(HereFlag)
                 Screen.Spawn(CurrentTag);

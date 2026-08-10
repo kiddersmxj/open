@@ -30,6 +30,10 @@ void S::Screen::Spawn(int Tag) {
         Launch(Program);
     for(std::string Ranger: Rangers)
         k::ExecCmd(Ranger);
+    for(std::string Claude: Claudes) {
+        k::Sleep(MAPDELAY);
+        k::ExecCmd(Claude);
+    }
 }
 
 void S::Screen::Spawn() {
@@ -69,6 +73,12 @@ void S::Screen::Moveto(int Tag) {
 void S::Screen::Ranger(std::string Dir) {
     std::string Cmd = RLaunch1 + Dir + RLaunch2;
     Rangers.push_back(Cmd);
+}
+
+void S::Screen::Claude(std::string Dir, std::string Alias) {
+    // Claude window pushed last so it ends up master
+    Claudes.push_back(CLaunch1 + "\"" + Dir + "\"" + CLaunch2);
+    Claudes.push_back(CLaunch1 + "\"" + Dir + "\" " + Alias + CLaunch2);
 }
 
 void S::Screen::Launch(std::string Program) {
