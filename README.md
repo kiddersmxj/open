@@ -17,6 +17,7 @@ Builds to `/usr/local/bin/open` and symlinks the supporting scripts
 ```
 usage: open [ -p project ] [ -f file in project ]
             [ -r ] [ -c ] [ -h/-v ]
+with no arguments (and not inside a project dir) opens ranger in $devel
 options:
     -h / --help         show help and usage notes
     -v / --version      print version and exit
@@ -29,7 +30,8 @@ options:
 ```
 
 The project name is inferred from the working directory when `-p` is omitted, so
-running `open` inside a project dir is enough.
+running `open` inside a project dir is enough. Outside one, bare `open` falls
+back to a ranger client in `$devel` itself (`-c` gives claude there instead).
 
 ## claude
 

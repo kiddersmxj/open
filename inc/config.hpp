@@ -26,6 +26,7 @@ const std::string ProgramName = "open";
 const std::string Version = "0.0.0";
 const std::string UsageNotes = R"(usage: open [ -p project ] [ -f file in project ]
             [ -r ] [ -c ] [ -h/-v ]
+with no arguments (and not inside a project dir) opens ranger in $devel
 options:
     -h / --help         show help and usage notes
     -v / --version      print version and exit

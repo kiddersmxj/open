@@ -185,6 +185,27 @@ int main(int argc, char** argv) {
             Usage(Message);
             return 1;
         }
+    // No project (and none inferred from cwd): just open the devel dir
+    } else if(ProjectName == "" && FileName == "") {
+        try {
+            S::Screen Screen;
+            if(ClaudeAlias != "")
+                Screen.Claude(DevelPath, ClaudeAlias);
+            else
+                Screen.Ranger(DevelPath);
+#ifndef TEST
+            if(HereFlag)
+                Screen.Spawn(CurrentTag);
+            else
+                Screen.Spawn();
+#endif
+        } catch (const char *Message) {
+            Usage(Message);
+            return 1;
+        } catch (std::string Message) {
+            Usage(Message);
+            return 1;
+        }
     }
 
     // Handle destructive flag to terminate parent process
