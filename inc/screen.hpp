@@ -5,6 +5,7 @@
 #include "send.hpp"
 
 #include <iostream>
+#include <map>
 #include <std-k.hpp>
 
 namespace S {
@@ -16,6 +17,8 @@ namespace S {
             void Spawn();
             void Ranger(std::string Dir);
             void Claude(std::string Dir, std::string Alias);
+            void Focus(int Tag);
+            int FindProjectTag(std::string Dir);
         private:
             std::vector<int> AvailableTags;
             std::vector<std::string> Programs;
@@ -24,6 +27,10 @@ namespace S {
             std::vector<KeySym> TagKeys = { XK_1, XK_2, XK_3, XK_4, XK_5, XK_6, XK_7, XK_8, XK_9 };
             void RefreshAvailable();
             void Moveto(int Tag);
+            void CountTags(unsigned int Mask, std::map<int, int> &Counts);
+            int BestTag(std::map<int, int> &Counts);
+            int SnapshotTag(std::string Dir);
+            int RawTag(std::string Dir);
             void Zoom();
             void Launch(std::string Program);
     };

@@ -10,6 +10,8 @@ int main(int argc, char** argv) {
     int RangerFlag = 0;
     // -t/--tag-here to spawn in current tag
     int HereFlag = 0;
+    // -n/--new to force a fresh tag even if the project is already open
+    int NewFlag = 0;
     // -d/--destroy to kill parent process
     int DestroyFlag = 0;
     // Project name from -p/--project-name
@@ -31,6 +33,7 @@ int main(int argc, char** argv) {
         { "ranger", no_argument, &RangerFlag, 1 },
         { "claude", optional_argument, NULL, 'c' },
         { "tag-here", no_argument, &HereFlag, 1 },
+        { "new", no_argument, &NewFlag, 1 },
         { "destory", no_argument, &DestroyFlag, 1 },
         { 0 }
     };
@@ -38,10 +41,10 @@ int main(int argc, char** argv) {
     // Command line option parsing loop
     while (1) {
         // Parse options using getopt_long:
-        // - "hvp:f:rtdc::" specifies short options (colon = requires argument,
+        // - "hvp:f:rtdnc::" specifies short options (colon = requires argument,
         //   double colon = optional argument that must be attached, eg '-cc')
         // - Options structure defines long options mapping to flags
-        opt = getopt_long(argc, argv, "hvp:f:rtdc::", Opts, 0);
+        opt = getopt_long(argc, argv, "hvp:f:rtdnc::", Opts, 0);
 
         // Exit loop when no more options (-1 return value)
         if (opt == -1) {
@@ -53,6 +56,10 @@ int main(int argc, char** argv) {
         } 
 
         switch (opt) {
+        // Long options with a flag pointer (--new, --ranger, ...) return 0
+        // having already set their flag, they are not an error
+        case 0:
+            break;
         case 'h':
             HelpFlag = 1;
             break;
@@ -80,6 +87,9 @@ int main(int argc, char** argv) {
             break;
         case 't':
             HereFlag = 1;
+            break;
+        case 'n':
+            NewFlag = 1;
             break;
         case 'd':
             DestroyFlag = 1;
@@ -134,16 +144,37 @@ int main(int argc, char** argv) {
             // Initialize project and screen objects
             Project Project(ProjectName);  // Load specified project
             S::Screen Screen;              // Create screen management object
-            if(ClaudeAlias != "")
-                Screen.Claude(Project.Directory(), ClaudeAlias);  // Terminal + claude instead
-            else
-                Screen.Ranger(Project.Directory());  // Launch ranger in project dir
+            // Is the project already running on a tag? (-n and -t skip the look up)
+            int ExistingTag = -1;
 #ifndef TEST
-            if(HereFlag)
-                Screen.Spawn(CurrentTag);
-            else
-                Screen.Spawn();
+            if(!NewFlag && !HereFlag)
+                ExistingTag = Screen.FindProjectTag(Project.Directory());
 #endif
+            if(ExistingTag >= 0) {
+                // Already open: go to it and add only what was asked for, so a
+                // bare '-p' is just a tag switch
+                if(ClaudeAlias != "")
+                    Screen.Claude(Project.Directory(), ClaudeAlias);
+                if(RangerFlag)
+                    Screen.Ranger(Project.Directory());
+                std::cout << ProjectName << ": already open on tag "
+                          << TagName(ExistingTag) << std::endl;
+#ifndef TEST
+                Screen.Focus(ExistingTag);
+                Screen.Spawn(CurrentTag);
+#endif
+            } else {
+                if(ClaudeAlias != "")
+                    Screen.Claude(Project.Directory(), ClaudeAlias);  // Terminal + claude instead
+                else
+                    Screen.Ranger(Project.Directory());  // Launch ranger in project dir
+#ifndef TEST
+                if(HereFlag)
+                    Screen.Spawn(CurrentTag);
+                else
+                    Screen.Spawn();
+#endif
+            }
         } catch (const char *Message) {
             Usage(Message);
             return 1;
@@ -172,8 +203,21 @@ int main(int argc, char** argv) {
                 Screen.Ranger(Project.Directory());
             if(ClaudeAlias != "")
                 Screen.Claude(Project.Directory(), ClaudeAlias);
+            // The files were asked for explicitly, so they get opened either
+            // way - the only question is which tag they land on
+            int ExistingTag = -1;
 #ifndef TEST
-            if(HereFlag)
+            if(!NewFlag && !HereFlag)
+                ExistingTag = Screen.FindProjectTag(Project.Directory());
+#endif
+            if(ExistingTag >= 0)
+                std::cout << ProjectName << ": already open on tag "
+                          << TagName(ExistingTag) << std::endl;
+#ifndef TEST
+            if(ExistingTag >= 0) {
+                Screen.Focus(ExistingTag);
+                Screen.Spawn(CurrentTag);
+            } else if(HereFlag)
                 Screen.Spawn(CurrentTag);
             else
                 Screen.Spawn();
@@ -223,6 +267,13 @@ void Usage() {
 void Usage(std::string Message) {
     std::cout << Message << std::endl;
     std::cout << UsageNotes << std::endl;
+}
+
+// dwm labels the first nine tags 1-9 and the rest A1-A9
+std::string TagName(int Tag) {
+    if(Tag < 9)
+        return std::to_string(Tag + 1);
+    return "A" + std::to_string(Tag - 8);
 }
 
 void PrintVersion() {

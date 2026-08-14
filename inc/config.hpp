@@ -19,6 +19,14 @@
 // Wait for the last window to map and take focus before zooming it to master
 #define ZOOMDELAY 400
 
+// Longest we wait for session-enrich.py to rewrite the session json, and how
+// often we look for it
+#define SESSIONWAIT 800
+#define SESSIONPOLL 25
+
+// dwm's hidden stash tag (zero based); clients parked there are not "open"
+#define STASHTAG 18
+
 const std::string EnableCMD = "xinput --enable 11";
 const std::string DisableCMD = "xinput --disable 11";
 
@@ -35,11 +43,18 @@ options:
     -r / --ranger       also spawn a ranger client in passed project dir
     -c / --claude       open project with claude ('-cc' for clc, '-cr' for clr)
     -t / --tag-here     opens request on current tag
+    -n / --new          new tag even if the project is already open somewhere
     -d / --destroy      destorys window (lowkey useless possibly except for hamza)
 )";
 
 const std::string GetAvailableTagsCmd = "xsetroot -name \"fsignal:6\"; sleep 0.1";
 const std::string AvailableTagsFilePath = "/tmp/dwm/emptytags.txt";
+
+// dwm dumps every client (tag mask + window id + title) synchronously, then
+// session-enrich.py adds each client's cwd from /proc and writes the json
+const std::string SaveSessionCmd = "xsetroot -name \"fsignal:7\"";
+const std::string SessionFilePath = std::string(getenv("HOME")) + "/.cache/dwm/session";
+const std::string SessionRawFilePath = std::string(getenv("HOME")) + "/.cache/dwm/session.raw";
 
 const std::string Launch1 = R"(st -e OpenLaunchCmd.sh )"; // Add program in middle of two
 const std::string Launch2 = R"( > /dev/null 2>&1 &)";

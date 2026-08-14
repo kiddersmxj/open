@@ -20,6 +20,7 @@ using json = nlohmann::json;
 void Usage();
 void Usage(std::string Message);
 void PrintVersion();
+std::string TagName(int Tag);
 
 #endif
 
