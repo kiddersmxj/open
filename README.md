@@ -36,8 +36,13 @@ back to a ranger client in `$devel` itself (`-c` gives claude there instead).
 
 ## already open
 
-If the project is already running somewhere, `open` takes you to that tag
-instead of claiming a new one. A bare `open -p foo` is then just a tag switch —
+The lookup only applies to a project named with `-p`. When the name was
+inferred from the working directory you are already standing in the project, so
+a jump would be a no-op: bare `open` inside a project dir always spawns on a
+fresh tag as it always did.
+
+If the project is named and already running somewhere, `open` takes you to that
+tag instead of claiming a new one. A bare `open -p foo` is then just a tag switch —
 nothing is spawned, not even the ranger it would normally give you. Anything
 asked for explicitly still gets opened, on that same tag:
 
@@ -50,7 +55,8 @@ open -p foo -n          # ignore all that, fresh tag as before
 
 A project counts as open when any window's working directory is the project dir
 or below it, so a terminal you `cd`'d into `foo/src` by hand counts too. `-t`
-skips the lookup entirely, since it already means "here".
+skips the lookup entirely, since it already means "here", as does inferring the
+project from the working directory.
 
 The lookup asks dwm for a session snapshot (`fsignal:7`) and reads the cwd and
 tag of every client out of `~/.cache/dwm/session`, which costs 250-400ms —

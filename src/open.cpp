@@ -116,6 +116,11 @@ int main(int argc, char** argv) {
     // Split path by '/' delimiter
     k::SplitString(Path, '/', Out, true);
 
+    // Was the project inferred from the working directory rather than asked
+    // for by name? Then we are already standing in it, and the "jump to the
+    // existing tag" behaviour would be a no-op with nothing spawned
+    bool Inferred = 0;
+
     // If no project name specified, try to infer from current directory
     if(ProjectName == "") {
         // Initialize Project object
@@ -124,6 +129,7 @@ int main(int argc, char** argv) {
         for(std::string P: Project.List()) {
             if(P == Out.back()) {
                 ProjectName = Out.back();
+                Inferred = 1;
                 break;
             }
         }
@@ -147,7 +153,7 @@ int main(int argc, char** argv) {
             // Is the project already running on a tag? (-n and -t skip the look up)
             int ExistingTag = -1;
 #ifndef TEST
-            if(!NewFlag && !HereFlag)
+            if(!NewFlag && !HereFlag && !Inferred)
                 ExistingTag = Screen.FindProjectTag(Project.Directory());
 #endif
             if(ExistingTag >= 0) {
@@ -207,7 +213,7 @@ int main(int argc, char** argv) {
             // way - the only question is which tag they land on
             int ExistingTag = -1;
 #ifndef TEST
-            if(!NewFlag && !HereFlag)
+            if(!NewFlag && !HereFlag && !Inferred)
                 ExistingTag = Screen.FindProjectTag(Project.Directory());
 #endif
             if(ExistingTag >= 0)
