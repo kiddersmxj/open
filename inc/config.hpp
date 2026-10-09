@@ -44,7 +44,7 @@ options:
     -c / --claude       open project with claude ('-cc' for clc, '-cr' for clr)
     -t / --tag-here     opens request on current tag
     -n / --new          new tag even if the project is already open somewhere
-    -d / --destroy      destorys window (lowkey useless possibly except for hamza)
+    -d / --destroy      destorys window (lowkey useless possibly except for morse)
 )";
 
 const std::string GetAvailableTagsCmd = "xsetroot -name \"fsignal:6\"; sleep 0.1";
