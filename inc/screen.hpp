@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <map>
+#include <nlohmann/json.hpp>
 #include <std-k.hpp>
 
 namespace S {
@@ -19,6 +20,12 @@ namespace S {
             void Claude(std::string Dir, std::string Alias);
             void Focus(int Tag);
             int FindProjectTag(std::string Dir);
+            bool RefreshSession();
+            int LiveTag(std::string Dir, bool Fresh);
+            std::string FindProjectWorkspace(std::string Dir);
+            std::vector<std::string> WorkspaceNames();
+            int FreeTag();
+            void Place(std::string Instance, std::string Dir, std::string Alias, bool Terminal);
         private:
             std::vector<int> AvailableTags;
             std::vector<std::string> Programs;
@@ -31,6 +38,9 @@ namespace S {
             int BestTag(std::map<int, int> &Counts);
             int SnapshotTag(std::string Dir);
             int RawTag(std::string Dir);
+            bool ReadSession(nlohmann::json &Session);
+            bool InDir(std::string Cwd, std::string Dir);
+            std::string Quote(std::string Arg);
             void Zoom();
             void Launch(std::string Program);
     };

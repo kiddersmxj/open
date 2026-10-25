@@ -14,4 +14,4 @@ if [ -n "$2" ]; then
     eval "$2"
 fi
 
-exec "$SHELL"
+exec "${SHELL:-/bin/bash}"

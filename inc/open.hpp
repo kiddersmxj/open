@@ -7,7 +7,9 @@
 #include "project.hpp"
 
 #include <std-k.hpp>
+#include <algorithm>
 #include <chrono>
+#include <filesystem>
 #include <thread>
 #include <getopt.h>
 #include <unistd.h>
@@ -21,6 +23,8 @@ void Usage();
 void Usage(std::string Message);
 void PrintVersion();
 std::string TagName(int Tag);
+int Remote(std::string Target, std::string Alias, bool DryRun);
+std::string ResolveDir(std::string Target);
 
 #endif
 

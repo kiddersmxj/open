@@ -27,6 +27,13 @@
 // dwm's hidden stash tag (zero based); clients parked there are not "open"
 #define STASHTAG 18
 
+// Field session-enrich.py stamps on a client with its _DWM_WORKSPACE name
+const std::string WorkspaceField = "workspace";
+
+// st instance names dwm-k reads to place a window without touching the view
+const std::string TagInstance = "dwm-tag-";
+const std::string WorkspaceInstance = "dwm-ws-";
+
 const std::string EnableCMD = "xinput --enable 11";
 const std::string DisableCMD = "xinput --disable 11";
 
@@ -34,6 +41,7 @@ const std::string ProgramName = "open";
 const std::string Version = "0.0.0";
 const std::string UsageNotes = R"(usage: open [ -p project ] [ -f file in project ]
             [ -r ] [ -c ] [ -h/-v ]
+       open -R dir [ -c ] [ --dry-run ]
 with no arguments (and not inside a project dir) opens ranger in $devel
 options:
     -h / --help         show help and usage notes
@@ -45,6 +53,10 @@ options:
     -t / --tag-here     opens request on current tag
     -n / --new          new tag even if the project is already open somewhere
     -d / --destroy      destorys window (lowkey useless possibly except for morse)
+    -R / --remote       place a claude window for dir without touching the view
+                        (dir: absolute, ~/..., or a name under $devel)
+                        prints one json line, see README
+    --dry-run           with -R, print the decision json but spawn nothing
 )";
 
 const std::string GetAvailableTagsCmd = "xsetroot -name \"fsignal:6\"; sleep 0.1";
@@ -65,7 +77,9 @@ const std::string RLaunch2 = R"( > /dev/null 2>&1 &)";
 const std::string CLaunch1 = R"(st -e ClaudeLaunchCmd.sh )"; // Add dir (+ alias) in middle of two
 const std::string CLaunch2 = R"( > /dev/null 2>&1 &)";
 
-const std::string DevelPath = getenv("devel");
+// A systemd user service has no $devel, fall back to where it always is
+const std::string DevelPath = getenv("devel") ? getenv("devel")
+    : std::string(getenv("HOME")) + "/devel";
 
 #endif
 

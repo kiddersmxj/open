@@ -14,6 +14,10 @@ int main(int argc, char** argv) {
     int NewFlag = 0;
     // -d/--destroy to kill parent process
     int DestroyFlag = 0;
+    // --dry-run with -R prints the placement decision without spawning
+    int DryRunFlag = 0;
+    // Directory from -R/--remote
+    std::string RemoteDir;
     // Project name from -p/--project-name
     std::string ProjectName;
     // File name from -f/--file-name
@@ -35,16 +39,18 @@ int main(int argc, char** argv) {
         { "tag-here", no_argument, &HereFlag, 1 },
         { "new", no_argument, &NewFlag, 1 },
         { "destory", no_argument, &DestroyFlag, 1 },
+        { "remote", required_argument, NULL, 'R' },
+        { "dry-run", no_argument, &DryRunFlag, 1 },
         { 0 }
     };
 
     // Command line option parsing loop
     while (1) {
         // Parse options using getopt_long:
-        // - "hvp:f:rtdnc::" specifies short options (colon = requires argument,
+        // - "hvp:f:R:rtdnc::" specifies short options (colon = requires argument,
         //   double colon = optional argument that must be attached, eg '-cc')
         // - Options structure defines long options mapping to flags
-        opt = getopt_long(argc, argv, "hvp:f:rtdnc::", Opts, 0);
+        opt = getopt_long(argc, argv, "hvp:f:R:rtdnc::", Opts, 0);
 
         // Exit loop when no more options (-1 return value)
         if (opt == -1) {
@@ -71,6 +77,9 @@ int main(int argc, char** argv) {
             break;
         case 'f':
             FileName = optarg;
+            break;
+        case 'R':
+            RemoteDir = optarg;
             break;
         case 'r':
             RangerFlag = 1;
@@ -109,6 +118,11 @@ int main(int argc, char** argv) {
     }
     if(VersionFlag) {
     }
+
+    // Remote mode stands alone: nobody is at the keyboard, so it never looks
+    // at the working directory and never sends keys
+    if(RemoteDir != "")
+        return Remote(RemoteDir, ClaudeAlias == "" ? "cl" : ClaudeAlias, DryRunFlag);
 
     // Get current working directory and split into components
     std::vector<std::string> Out;
@@ -264,6 +278,94 @@ int main(int argc, char** argv) {
         k::ExecCmd("kill -4 " + std::to_string(getppid()));
 
     return 0;
+}
+
+// Absolute path, ~ or ~/..., or a name under $devel, made canonical so it
+// compares with the cwds enrich reads out of /proc
+std::string ResolveDir(std::string Target) {
+    namespace fs = std::filesystem;
+    std::string Path;
+    if(Target.rfind("/", 0) == 0)
+        Path = Target;
+    else if(Target == "~" || Target.rfind("~/", 0) == 0)
+        Path = std::string(getenv("HOME")) + Target.substr(1);
+    else
+        Path = DevelPath + "/" + Target;
+
+    std::error_code Ec;
+    if(!fs::is_directory(Path, Ec))
+        throw "No such directory: " + Path;
+    std::string Dir = fs::canonical(Path, Ec).string();
+    if(Ec) throw "Cannot resolve directory: " + Path;
+    return Dir;
+}
+
+// Place a claude window for a dir without changing view or focus, then print
+// one json line saying where it went. Order: the live tag already holding the
+// dir, the stashed workspace holding it, a free tag, a new stashed workspace
+int Remote(std::string Target, std::string Alias, bool DryRun) {
+    try {
+        std::string Dir = ResolveDir(Target);
+        // Without a display the snapshot is stale and st cannot map
+        if(!getenv("DISPLAY") || std::string(getenv("DISPLAY")) == "")
+            throw "DISPLAY is not set";
+        S::Screen Screen;
+
+        bool Fresh = Screen.RefreshSession();
+        int Tag = Screen.LiveTag(Dir, Fresh);
+        std::string Workspace;
+        std::string Placed;
+        bool Terminal = 0;
+
+        if(Tag >= 0) {
+            Placed = "tag";
+        } else if((Workspace = Screen.FindProjectWorkspace(Dir)) != "") {
+            Placed = "stash";
+        } else if((Tag = Screen.FreeTag()) >= 0) {
+            Placed = "new-tag";
+            Terminal = 1;
+        } else {
+            // Named after the dir, made unique if another dir has that name
+            std::string Base = std::filesystem::path(Dir).filename().string();
+            if(Base == "") Base = "root";
+            std::vector<std::string> Taken = Screen.WorkspaceNames();
+            Workspace = Base;
+            for(int N = 2; std::find(Taken.begin(), Taken.end(), Workspace) != Taken.end(); N++)
+                Workspace = Base + "-" + std::to_string(N);
+            Placed = "new-stash";
+            Terminal = 1;
+        }
+
+        if(!DryRun) {
+            if(Workspace != "")
+                Screen.Place(WorkspaceInstance + Workspace, Dir, Alias, Terminal);
+            else
+                Screen.Place(TagInstance + std::to_string(Tag), Dir, Alias, Terminal);
+        }
+
+        json Out = {
+            { "dir", Dir },
+            { "placed", Placed },
+            { "tag", nullptr },
+            { "workspace", nullptr },
+            { "terminal", Terminal },
+        };
+        if(Workspace != "")
+            Out["workspace"] = Workspace;
+        else
+            Out["tag"] = TagName(Tag);
+        if(DryRun)
+            Out["dry_run"] = true;
+        std::cout << Out.dump() << std::endl;
+        return EXIT_SUCCESS;
+    } catch (const char *Message) {
+        std::cerr << ProgramName << ": " << Message << std::endl;
+    } catch (std::string Message) {
+        std::cerr << ProgramName << ": " << Message << std::endl;
+    } catch (const std::exception &E) {
+        std::cerr << ProgramName << ": " << E.what() << std::endl;
+    }
+    return EXIT_FAILURE;
 }
 
 void Usage() {
