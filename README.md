@@ -12,6 +12,12 @@ for the files, a ranger client, or a claude session.
 Builds to `/usr/local/bin/open` and symlinks the supporting scripts
 (`OpenLaunchCmd.sh`, `RangerLaunchCmd.sh`, `ClaudeLaunchCmd.sh`) alongside it.
 
+It runs without a password prompt, so an agent can run it unattended. The
+install step is `sudo cmake`, and `cmake` is passwordless in sudoers on
+mxj-arch-2 (the twin gets the same `/etc` through custos). The symlink steps use
+plain `sudo` but only run on a first install, when a script is missing from
+`/usr/local/bin`. A rebuild after a change is just `./install.sh`.
+
 ## usage
 
 ```
