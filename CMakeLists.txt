@@ -37,6 +37,10 @@ target_sources(open
     PRIVATE src/project.cpp
 )
 
+# libstd-k lives in /usr/local/lib, which the loader only searches when the shell
+# sets LD_LIBRARY_PATH. Bake the path in so open also runs from a systemd service
+set_target_properties(open PROPERTIES INSTALL_RPATH /usr/local/lib)
+
 install(
     TARGETS open
     DESTINATION /usr/local/bin/
