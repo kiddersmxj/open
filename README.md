@@ -28,6 +28,10 @@ options:
     -t / --tag-here     opens request on current tag
     -n / --new          new tag even if the project is already open somewhere
     -d / --destroy      destorys window (lowkey useless possibly except for morse)
+    -R / --remote       place a claude window for dir without touching the view
+                        (dir: absolute, ~/..., or a name under $devel)
+                        prints one json line, see README
+    --dry-run           with -R, print the decision json but spawn nothing
 ```
 
 The project name is inferred from the working directory when `-p` is omitted, so
@@ -89,3 +93,51 @@ as master, since dwm attaches below the selected client rather than at the head.
 `-c` takes its suffix attached, so it must come last in a cluster: `-rc` and
 `-tc` are fine, `-cp foo` reads the `p` as a suffix. Likewise `-p` takes its
 argument attached, so `-pc foo` means project `c` — use `-p foo -c`.
+
+## remote
+
+`open -R <dir>` is for when nobody is at the keyboard, e.g. a service starting
+a session from the phone. It never switches the view, never sends keys and
+never takes focus. It needs `DISPLAY` set and dwm-k's instance placement: `st
+-n dwm-tag-<N>` puts a window on tag N (zero based), `st -n dwm-ws-<name>` puts
+it into stashed workspace `<name>`.
+
+`<dir>` is an absolute path, `~/...`, or a path under `$devel` (`foo`,
+`eNBe/desk`). It must exist. It always launches claude (`cl`, or `-cc`/`-cr`).
+Placement, first match wins:
+
+| `placed`    | when                                              | spawns            |
+|-------------|---------------------------------------------------|-------------------|
+| `tag`       | a live tag has a window in the dir or below it    | claude only       |
+| `stash`     | a stashed workspace has a window in the dir       | claude only       |
+| `new-tag`   | a free tag exists (past `FIRSTTAG`)               | terminal + claude |
+| `new-stash` | no free tag                                       | terminal + claude |
+
+Live tags use the same lookup as above, busiest tag wins. Stashed workspaces
+are matched the same way from the `workspace` field enrich writes on each
+client. A new stashed workspace is named after the dir's basename, with `-2`,
+`-3`... added if that name is already in use.
+
+On success it prints one json line to stdout and exits 0:
+
+```json
+{"dir":"/home/kidders/devel/foo","placed":"new-tag","tag":"A9","terminal":true,"workspace":null}
+{"dir":"/home/kidders/devel/blinder","placed":"stash","tag":null,"terminal":false,"workspace":"blinder"}
+```
+
+| field       | meaning                                                   |
+|-------------|-----------------------------------------------------------|
+| `dir`       | the resolved, canonical dir                               |
+| `placed`    | `tag`, `stash`, `new-tag` or `new-stash`                  |
+| `tag`       | tag as the bar labels it (`1`-`9`, `A1`-`A9`), else null  |
+| `workspace` | stashed workspace name, else null                         |
+| `terminal`  | whether a plain terminal was spawned too                  |
+| `dry_run`   | only present, as true, under `--dry-run`                  |
+
+On failure it prints one line to stderr and exits non-zero (no such
+directory, `DISPLAY` not set).
+
+Run from a systemd user service, the `st` windows land in that service's
+cgroup, so stopping or restarting the service kills them. Start `open` with
+`systemd-run --user --scope` or set `KillMode=process` in the unit.
+
