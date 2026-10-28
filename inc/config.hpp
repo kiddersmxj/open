@@ -41,7 +41,7 @@ const std::string ProgramName = "open";
 const std::string Version = "0.0.0";
 const std::string UsageNotes = R"(usage: open [ -p project ] [ -f file in project ]
             [ -r ] [ -c ] [ -h/-v ]
-       open -R dir [ -c ] [ --dry-run ]
+       open -R dir [ -c | -S id ] [ --dry-run ]
 with no arguments (and not inside a project dir) opens ranger in $devel
 options:
     -h / --help         show help and usage notes
@@ -56,6 +56,7 @@ options:
     -R / --remote       place a claude window for dir without touching the view
                         (dir: absolute, ~/..., or a name under $devel)
                         prints one json line, see README
+    -S / --session      with -R, reopen that chat (claude --resume <id>)
     --dry-run           with -R, print the decision json but spawn nothing
 )";
 

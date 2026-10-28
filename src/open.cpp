@@ -18,6 +18,8 @@ int main(int argc, char** argv) {
     int DryRunFlag = 0;
     // Directory from -R/--remote
     std::string RemoteDir;
+    // Chat to reopen from -S/--session, with -R only
+    std::string SessionId;
     // Project name from -p/--project-name
     std::string ProjectName;
     // File name from -f/--file-name
@@ -40,6 +42,7 @@ int main(int argc, char** argv) {
         { "new", no_argument, &NewFlag, 1 },
         { "destory", no_argument, &DestroyFlag, 1 },
         { "remote", required_argument, NULL, 'R' },
+        { "session", required_argument, NULL, 'S' },
         { "dry-run", no_argument, &DryRunFlag, 1 },
         { 0 }
     };
@@ -47,10 +50,10 @@ int main(int argc, char** argv) {
     // Command line option parsing loop
     while (1) {
         // Parse options using getopt_long:
-        // - "hvp:f:R:rtdnc::" specifies short options (colon = requires argument,
+        // - "hvp:f:R:S:rtdnc::" specifies short options (colon = requires argument,
         //   double colon = optional argument that must be attached, eg '-cc')
         // - Options structure defines long options mapping to flags
-        opt = getopt_long(argc, argv, "hvp:f:R:rtdnc::", Opts, 0);
+        opt = getopt_long(argc, argv, "hvp:f:R:S:rtdnc::", Opts, 0);
 
         // Exit loop when no more options (-1 return value)
         if (opt == -1) {
@@ -80,6 +83,9 @@ int main(int argc, char** argv) {
             break;
         case 'R':
             RemoteDir = optarg;
+            break;
+        case 'S':
+            SessionId = optarg;
             break;
         case 'r':
             RangerFlag = 1;
@@ -121,6 +127,19 @@ int main(int argc, char** argv) {
 
     // Remote mode stands alone: nobody is at the keyboard, so it never looks
     // at the working directory and never sends keys
+    if(SessionId != "") {
+        if(RemoteDir == "") {
+            Usage("-S needs -R");
+            return EXIT_FAILURE;
+        }
+        // The id is eval'd by the launch script, so nothing but a session id
+        // may get through: hex and dashes, as claude writes them
+        if(SessionId.find_first_not_of("0123456789abcdef-") != std::string::npos) {
+            Usage("Not a session id: " + SessionId);
+            return EXIT_FAILURE;
+        }
+        ClaudeAlias = "clr " + SessionId;
+    }
     if(RemoteDir != "")
         return Remote(RemoteDir, ClaudeAlias == "" ? "cl" : ClaudeAlias, DryRunFlag);
 

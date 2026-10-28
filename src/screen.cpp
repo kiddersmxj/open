@@ -258,7 +258,8 @@ void S::Screen::Place(std::string Instance, std::string Dir, std::string Alias, 
         k::ExecCmd(Head + CLaunch2);
         k::Sleep(MAPDELAY);
     }
-    k::ExecCmd(Head + " " + Alias + CLaunch2);
+    // Quoted whole: the launch script evals it, so "clr <id>" stays one argument
+    k::ExecCmd(Head + " " + Quote(Alias) + CLaunch2);
 }
 
 // Single quote for sh, so any path or name survives the trip

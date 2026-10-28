@@ -110,6 +110,9 @@ it into stashed workspace `<name>`.
 
 `<dir>` is an absolute path, `~/...`, or a path under `$devel` (`foo`,
 `eNBe/desk`). It must exist. It always launches claude (`cl`, or `-cc`/`-cr`).
+`-S <id>` reopens that chat instead (`claude --resume <id>`); the id must be
+hex and dashes, since the launch script evals it. custos uses this to bring
+back a session that had no window on the other machine.
 Placement, first match wins:
 
 | `placed`    | when                                              | spawns            |
