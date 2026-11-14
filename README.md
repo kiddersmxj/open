@@ -108,6 +108,10 @@ never takes focus. It needs `DISPLAY` set and dwm-k's instance placement: `st
 -n dwm-tag-<N>` puts a window on tag N (zero based), `st -n dwm-ws-<name>` puts
 it into stashed workspace `<name>`.
 
+st looks up its Xresources under the instance name, so st-k must fall back to
+`st.*` when the name is not `st` (st-k e271fbd). An older st opens these
+windows in its built-in font and colours, which look zoomed out.
+
 `<dir>` is an absolute path, `~/...`, or a path under `$devel` (`foo`,
 `eNBe/desk`). It must exist. It always launches claude (`cl`, or `-cc`/`-cr`).
 `-S <id>` reopens that chat instead (`claude --resume <id>`); the id must be
