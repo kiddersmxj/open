@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <sstream>
+#include <unistd.h>
 
 #include <nlohmann/json.hpp>
 
@@ -262,15 +263,27 @@ void S::Screen::Place(std::string Instance, std::string Dir, std::string Alias, 
     k::ExecCmd(Head + " " + Quote(Alias) + CLaunch2);
 }
 
-// Swap a stashed workspace onto an empty tag and view it, false if dwm-k
-// refused (gone from the stash, or the tag filled up in the meantime)
-bool S::Screen::Unstash(std::string Workspace, int Tag) {
-    return k::ExecCmd(UnstashCmd + Quote(Workspace) + " " + std::to_string(Tag)) == 0;
+// Swap a stashed workspace onto the first empty tag past FIRSTTAG and view
+// it. dwm-k picks the tag from the live windows, since the emptytags file
+// AvailableTags comes from can be stale. Returns the tag, -1 if none was
+// empty, -2 if dwm-k failed some other way (it says why on stderr)
+int S::Screen::Unstash(std::string Workspace) {
+    std::string Cmd = UnstashCmd + Quote(Workspace);
+    for(int Tag = FIRSTTAG + 1; Tag < STASHTAG; Tag++)
+        Cmd += " " + std::to_string(Tag);
+    std::string Output;
+    int Exit = k::ExecCmd(Cmd, Output);
+    if(Exit == 2) return -1;
+    if(Exit != 0 || Output.empty()) return -2;
+    return std::atoi(Output.c_str());
 }
 
-// A desktop notification, for when open runs from a keybind with no terminal
+// A popup for when open runs from a keybind with nothing to print to. There
+// is no notification daemon, so notify-send would go nowhere
 void S::Screen::Notify(std::string Title, std::string Body) {
-    k::ExecCmd("notify-send -a " + Quote(ProgramName) + " " + Quote(Title) + " " + Quote(Body));
+    if(isatty(STDERR_FILENO)) return;
+    k::ExecCmd("zenity --warning --title=" + Quote(Title) + " --text=" + Quote(Body)
+               + " > /dev/null 2>&1 &");
 }
 
 // Single quote for sh, so any path or name survives the trip

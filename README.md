@@ -81,7 +81,14 @@ If nothing live holds the project but a stashed workspace does, `-p` swaps that
 workspace onto the first free tag (through dwm-k's
 `dwm-workspaces.py --unstash`, which also views it) and then adds whatever was
 asked for there, as for an open project. With no free tag it opens nothing,
-prints the reason to stderr, sends a desktop notification and exits 1.
+prints the reason to stderr and exits 1. When stderr is not a terminal (run
+from a keybind) it also pops up a zenity warning, as there is no notification
+daemon for `notify-send` to reach.
+
+dwm-k picks that tag from the live windows rather than
+`/tmp/dwm/emptytags.txt`. That file is only rewritten on `fsignal:6`, which the
+status bar can overwrite before dwm reads it, so it can list a tag that has
+since filled up. Fresh-tag spawns and `-R` still use it.
 
 ## claude
 

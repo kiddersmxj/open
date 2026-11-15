@@ -415,16 +415,12 @@ int Remote(std::string Target, std::string Alias, bool DryRun) {
 // also views it. With no free tag nothing is opened, and it says so loudly,
 // since open often runs from a keybind with no terminal to print to
 bool Unstash(S::Screen &Screen, std::string Name, std::string Workspace) {
-    int Tag = Screen.FreeTag();
+    int Tag = Screen.Unstash(Workspace);
     if(Tag < 0) {
-        std::string Body = "No empty tags. " + Name + " is stashed as '" + Workspace
-            + "', free a tag or swap it in with MOD+w";
-        std::cerr << ProgramName << ": " << Body << std::endl;
-        Screen.Notify(Name + " is stashed", Body);
-        return 0;
-    }
-    if(!Screen.Unstash(Workspace, Tag)) {
-        std::string Body = "Could not move stashed '" + Workspace + "' onto tag " + TagName(Tag);
+        std::string Body = Tag == -1
+            ? "No empty tags. " + Name + " is stashed as '" + Workspace
+                + "', free a tag or swap it in with MOD+w"
+            : "Could not move stashed '" + Workspace + "' onto a tag";
         std::cerr << ProgramName << ": " << Body << std::endl;
         Screen.Notify(Name + " is stashed", Body);
         return 0;
