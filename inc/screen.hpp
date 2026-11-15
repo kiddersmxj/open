@@ -35,6 +35,7 @@ namespace S {
             std::vector<std::string> Claudes;
             std::vector<KeySym> TagKeys = { XK_1, XK_2, XK_3, XK_4, XK_5, XK_6, XK_7, XK_8, XK_9 };
             void RefreshAvailable();
+            std::vector<unsigned long> WindowProperty(Display *Dpy, Window Win, const char *Name);
             void Moveto(int Tag);
             void CountTags(unsigned int Mask, std::map<int, int> &Counts);
             int BestTag(std::map<int, int> &Counts);

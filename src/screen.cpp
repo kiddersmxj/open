@@ -12,18 +12,44 @@ S::Screen::Screen() {
     RefreshAvailable();
 }
 
+// Free tags past FIRSTTAG, read straight off the windows: dwm stamps each
+// client's tag mask in _NET_CLIENT_INFO. Asking dwm for its emptytags file
+// over fsignal:6 lost the signal whenever the status bar wrote the root name
+// first, leaving a stale list that could hand out an occupied tag
 void S::Screen::RefreshAvailable() {
-    k::ExecCmd(GetAvailableTagsCmd);
     AvailableTags.clear();
-    for(std::string Tag: k::ReadFileLines(AvailableTagsFilePath)) {
-        if(Tag == "") continue;
-        int T = std::atoi(std::move(Tag.c_str()));
-        /* if(T > 6) */
-        /*     T++; */
-        // Remove less than tag 3 (2 for zero based)
-        if(T > FIRSTTAG)
-            AvailableTags.push_back(T);
+    Display *Dpy = XOpenDisplay(NULL);
+    if(!Dpy) return;
+
+    unsigned int Occupied = 0;
+    for(Window Win: WindowProperty(Dpy, DefaultRootWindow(Dpy), "_NET_CLIENT_LIST")) {
+        std::vector<unsigned long> Info = WindowProperty(Dpy, Win, "_NET_CLIENT_INFO");
+        if(!Info.empty())
+            Occupied |= Info[0];
     }
+    XCloseDisplay(Dpy);
+
+    for(int Tag = FIRSTTAG + 1; Tag < STASHTAG; Tag++)
+        if(!(Occupied & (1u << Tag)))
+            AvailableTags.push_back(Tag);
+}
+
+// A 32-bit format property as longs, empty if the window or property is gone
+std::vector<unsigned long> S::Screen::WindowProperty(Display *Dpy, Window Win, const char *Name) {
+    std::vector<unsigned long> Values;
+    Atom Prop = XInternAtom(Dpy, Name, True);
+    if(Prop == None) return Values;
+    Atom Type;
+    int Format;
+    unsigned long Count, After;
+    unsigned char *Data = nullptr;
+    if(XGetWindowProperty(Dpy, Win, Prop, 0, 4096, False, AnyPropertyType, &Type,
+            &Format, &Count, &After, &Data) != Success || !Data)
+        return Values;
+    if(Format == 32)
+        Values.assign((unsigned long *)Data, (unsigned long *)Data + Count);
+    XFree(Data);
+    return Values;
 }
 
 void S::Screen::Add(std::string ProgramPath) {
@@ -264,9 +290,9 @@ void S::Screen::Place(std::string Instance, std::string Dir, std::string Alias, 
 }
 
 // Swap a stashed workspace onto the first empty tag past FIRSTTAG and view
-// it. dwm-k picks the tag from the live windows, since the emptytags file
-// AvailableTags comes from can be stale. Returns the tag, -1 if none was
-// empty, -2 if dwm-k failed some other way (it says why on stderr)
+// it. dwm-k picks the tag, from the same window properties RefreshAvailable
+// reads, so the stash and open agree. Returns the tag, -1 if none was empty,
+// -2 if dwm-k failed some other way (it says why on stderr)
 int S::Screen::Unstash(std::string Workspace) {
     std::string Cmd = UnstashCmd + Quote(Workspace);
     for(int Tag = FIRSTTAG + 1; Tag < STASHTAG; Tag++)

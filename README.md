@@ -85,10 +85,11 @@ prints the reason to stderr and exits 1. When stderr is not a terminal (run
 from a keybind) it also pops up a zenity warning, as there is no notification
 daemon for `notify-send` to reach.
 
-dwm-k picks that tag from the live windows rather than
-`/tmp/dwm/emptytags.txt`. That file is only rewritten on `fsignal:6`, which the
-status bar can overwrite before dwm reads it, so it can list a tag that has
-since filled up. Fresh-tag spawns and `-R` still use it.
+Free tags, for this and for every fresh-tag spawn and `-R`, are read straight
+off the windows: dwm stamps each client's tag mask in `_NET_CLIENT_INFO`.
+open used to ask dwm for `/tmp/dwm/emptytags.txt` over `fsignal:6`, but the
+status bar can overwrite the root name before dwm reads the signal, so that
+file could list a tag that had since filled up.
 
 ## claude
 

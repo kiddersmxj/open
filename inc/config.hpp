@@ -60,8 +60,6 @@ options:
     --dry-run           with -R, print the decision json but spawn nothing
 )";
 
-const std::string GetAvailableTagsCmd = "xsetroot -name \"fsignal:6\"; sleep 0.1";
-const std::string AvailableTagsFilePath = "/tmp/dwm/emptytags.txt";
 
 // dwm dumps every client (tag mask + window id + title) synchronously, then
 // session-enrich.py adds each client's cwd from /proc and writes the json
