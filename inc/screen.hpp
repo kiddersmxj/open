@@ -26,6 +26,8 @@ namespace S {
             std::vector<std::string> WorkspaceNames();
             int FreeTag();
             void Place(std::string Instance, std::string Dir, std::string Alias, bool Terminal);
+            bool Unstash(std::string Workspace, int Tag);
+            void Notify(std::string Title, std::string Body);
         private:
             std::vector<int> AvailableTags;
             std::vector<std::string> Programs;

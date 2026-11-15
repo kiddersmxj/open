@@ -262,6 +262,17 @@ void S::Screen::Place(std::string Instance, std::string Dir, std::string Alias, 
     k::ExecCmd(Head + " " + Quote(Alias) + CLaunch2);
 }
 
+// Swap a stashed workspace onto an empty tag and view it, false if dwm-k
+// refused (gone from the stash, or the tag filled up in the meantime)
+bool S::Screen::Unstash(std::string Workspace, int Tag) {
+    return k::ExecCmd(UnstashCmd + Quote(Workspace) + " " + std::to_string(Tag)) == 0;
+}
+
+// A desktop notification, for when open runs from a keybind with no terminal
+void S::Screen::Notify(std::string Title, std::string Body) {
+    k::ExecCmd("notify-send -a " + Quote(ProgramName) + " " + Quote(Title) + " " + Quote(Body));
+}
+
 // Single quote for sh, so any path or name survives the trip
 std::string S::Screen::Quote(std::string Arg) {
     std::string Out = "'";

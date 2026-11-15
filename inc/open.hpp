@@ -25,6 +25,7 @@ void PrintVersion();
 std::string TagName(int Tag);
 int Remote(std::string Target, std::string Alias, bool DryRun);
 std::string ResolveDir(std::string Target);
+bool Unstash(S::Screen &Screen, std::string Name, std::string Workspace);
 
 #endif
 

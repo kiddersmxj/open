@@ -81,6 +81,9 @@ const std::string CLaunch2 = R"( > /dev/null 2>&1 &)";
 // A systemd user service has no $devel, fall back to where it always is
 const std::string DevelPath = getenv("devel") ? getenv("devel")
     : std::string(getenv("HOME")) + "/devel";
+// dwm-k's workspace tool, non-interactive: swap a stashed workspace onto a
+// tag and view it. Takes the quoted name and the 0-based tag after it
+const std::string UnstashCmd = DevelPath + "/dwm-k/BashScripts/dwm-workspaces.py --unstash ";
 
 #endif
 

@@ -183,13 +183,29 @@ int main(int argc, char** argv) {
             // Initialize project and screen objects
             Project Project(ProjectName);  // Load specified project
             S::Screen Screen;              // Create screen management object
-            // Is the project already running on a tag? (-n and -t skip the look up)
+            // Is the project already running on a tag, or stashed? (-n and -t
+            // skip the look up)
             int ExistingTag = -1;
+            std::string Stashed;
 #ifndef TEST
-            if(!NewFlag && !HereFlag && !Inferred)
+            if(!NewFlag && !HereFlag && !Inferred) {
                 ExistingTag = Screen.FindProjectTag(Project.Directory());
+                if(ExistingTag < 0)
+                    Stashed = Screen.FindProjectWorkspace(Project.Directory());
+            }
 #endif
-            if(ExistingTag >= 0) {
+            if(Stashed != "") {
+                // Bring it back onto a free tag, then add what was asked for
+                if(!Unstash(Screen, ProjectName, Stashed))
+                    return EXIT_FAILURE;
+                if(ClaudeAlias != "")
+                    Screen.Claude(Project.Directory(), ClaudeAlias);
+                if(RangerFlag)
+                    Screen.Ranger(Project.Directory());
+#ifndef TEST
+                Screen.Spawn(CurrentTag);
+#endif
+            } else if(ExistingTag >= 0) {
                 // Already open: go to it and add only what was asked for, so a
                 // bare '-p' is just a tag switch
                 if(ClaudeAlias != "")
@@ -245,15 +261,23 @@ int main(int argc, char** argv) {
             // The files were asked for explicitly, so they get opened either
             // way - the only question is which tag they land on
             int ExistingTag = -1;
+            std::string Stashed;
 #ifndef TEST
-            if(!NewFlag && !HereFlag && !Inferred)
+            if(!NewFlag && !HereFlag && !Inferred) {
                 ExistingTag = Screen.FindProjectTag(Project.Directory());
+                if(ExistingTag < 0)
+                    Stashed = Screen.FindProjectWorkspace(Project.Directory());
+            }
 #endif
+            if(Stashed != "" && !Unstash(Screen, ProjectName, Stashed))
+                return EXIT_FAILURE;
             if(ExistingTag >= 0)
                 std::cout << ProjectName << ": already open on tag "
                           << TagName(ExistingTag) << std::endl;
 #ifndef TEST
-            if(ExistingTag >= 0) {
+            if(Stashed != "")
+                Screen.Spawn(CurrentTag);
+            else if(ExistingTag >= 0) {
                 Screen.Focus(ExistingTag);
                 Screen.Spawn(CurrentTag);
             } else if(HereFlag)
@@ -385,6 +409,29 @@ int Remote(std::string Target, std::string Alias, bool DryRun) {
         std::cerr << ProgramName << ": " << E.what() << std::endl;
     }
     return EXIT_FAILURE;
+}
+
+// The project is stashed: swap its workspace onto the first free tag, which
+// also views it. With no free tag nothing is opened, and it says so loudly,
+// since open often runs from a keybind with no terminal to print to
+bool Unstash(S::Screen &Screen, std::string Name, std::string Workspace) {
+    int Tag = Screen.FreeTag();
+    if(Tag < 0) {
+        std::string Body = "No empty tags. " + Name + " is stashed as '" + Workspace
+            + "', free a tag or swap it in with MOD+w";
+        std::cerr << ProgramName << ": " << Body << std::endl;
+        Screen.Notify(Name + " is stashed", Body);
+        return 0;
+    }
+    if(!Screen.Unstash(Workspace, Tag)) {
+        std::string Body = "Could not move stashed '" + Workspace + "' onto tag " + TagName(Tag);
+        std::cerr << ProgramName << ": " << Body << std::endl;
+        Screen.Notify(Name + " is stashed", Body);
+        return 0;
+    }
+    std::cout << Name << ": was stashed as '" << Workspace << "', moved to tag "
+              << TagName(Tag) << std::endl;
+    return 1;
 }
 
 void Usage() {

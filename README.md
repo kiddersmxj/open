@@ -73,8 +73,14 @@ tag of every client out of `~/.cache/dwm/session`, which costs 250-400ms —
 dwm writes `session.raw` immediately but `session-enrich.py` needs a moment to
 resolve each client's cwd through `/proc`. If the json does not refresh in time
 we fall back to matching the `st:<dir>` window titles in the raw dump. Clients
-on the stash tag are ignored, so a stashed workspace does not count as open.
-Where the project spans several tags the busiest one wins.
+on the stash tag do not count as open. Where the project spans several tags
+the busiest one wins.
+
+If nothing live holds the project but a stashed workspace does, `-p` swaps that
+workspace onto the first free tag (through dwm-k's
+`dwm-workspaces.py --unstash`, which also views it) and then adds whatever was
+asked for there, as for an open project. With no free tag it opens nothing,
+prints the reason to stderr, sends a desktop notification and exits 1.
 
 ## claude
 
