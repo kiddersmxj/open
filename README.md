@@ -44,7 +44,7 @@ The project name is inferred from the working directory when `-p` is omitted, so
 running `open` inside a project dir is enough. Outside one, bare `open` falls
 back to a ranger client in `$devel` itself (`-c` gives claude there instead).
 
-## already open
+## already open (or stashed)
 
 The lookup only applies to a project named with `-p`. When the name was
 inferred from the working directory you are already standing in the project, so
@@ -61,6 +61,7 @@ open -p foo             # switch to foo's tag
 open -p foo -c          # switch, then add a claude window there
 open -p foo -f main.cpp # switch, then open main.cpp there
 open -p foo -n          # ignore all that, fresh tag as before
+open -p foo -c          # foo stashed: swap it onto a free tag, add claude there
 ```
 
 A project counts as open when any window's working directory is the project dir
