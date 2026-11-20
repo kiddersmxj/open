@@ -1,0 +1,33 @@
+{
+  "id": "logo-002",
+  "state": "approved",
+  "image": "approved/logo.png",
+  "slug": "logo",
+  "created": "2026-11-20T17:59:03+00:00",
+  "request": "An app icon, seen small at 64px on a grid. A 3x3 grid of nine identical square tiles, all exactly the same size with equal gaps, centred exactly in the canvas and filling about 70% of it. Eight tiles are muted grey; the middle tile of the right column is lit solid amber. A short bold amber arrow sits entirely outside the grid, to the right of it, pointing left into the lit tile; the arrow does not overlap any grey tile. Charcoal background filling the whole square canvas, edge to edge. No text.",
+  "prompt": "Create an image.\n\nArtwork for open: open: a command that opens a project onto a free dwm tag on Max's tiling desktop, with terminals, ranger or a claude window\n\nStyle: Flat, minimal geometric mark in the spirit of a tiling window manager: crisp square tiles, even gaps, no texture, no gradients, no shading.\n\nRules:\n- Flat vector shapes with clean straight edges\n- Charcoal background filling the whole square\n- One amber accent, everything else in muted greys\n- Must read clearly at 64px\n\nAvoid: text or letters; gradients, glow or 3D; drop shadows; photographic detail; extra colours beyond the palette.\n\nPalette (use these colours): charcoal #1E2124, tile #3A3F45, amber #F5A623.\n\nRequest: An app icon, seen small at 64px on a grid. A 3x3 grid of nine identical square tiles, all exactly the same size with equal gaps, centred exactly in the canvas and filling about 70% of it. Eight tiles are muted grey; the middle tile of the right column is lit solid amber. A short bold amber arrow sits entirely outside the grid, to the right of it, pointing left into the lit tile; the arrow does not overlap any grey tile. Charcoal background filling the whole square canvas, edge to edge. No text.\n\nMake it square (1:1). Reply with the image only.",
+  "provider": "chatgpt",
+  "model": "chatgpt",
+  "params": {
+    "size": "1K",
+    "aspect": "1:1",
+    "quality": "medium",
+    "transparent": false
+  },
+  "refs": [],
+  "parent": null,
+  "cost_usd": 0.0,
+  "model_text": null,
+  "chat": "https://chatgpt.com/c/6b008a51-a948-83ed-8457-c52caa2b0dd8",
+  "jobs": [
+    "j_d39774cf7aeb2d54"
+  ],
+  "by": "kidders@mxj-arch-2",
+  "asset": "logo",
+  "approved": {
+    "at": "2026-11-20T17:59:10+00:00",
+    "by": "kidders@mxj-arch-2 (no terminal)",
+    "placed": [],
+    "note": null
+  }
+}

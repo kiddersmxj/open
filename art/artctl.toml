@@ -1,0 +1,43 @@
+# artctl brand kit. See SPEC.md in the artctl repo for every field.
+name = "open"
+# One line: what the product is and who it is for. Sent with every request.
+description = "open: a command that opens a project onto a free dwm tag on Max's tiling desktop, with terminals, ranger or a claude window"
+
+[style]
+# How everything should look, in a sentence or two.
+summary = "Flat, minimal geometric mark in the spirit of a tiling window manager: crisp square tiles, even gaps, no texture, no gradients, no shading."
+# Hard rules the model must follow.
+rules = ["Flat vector shapes with clean straight edges", "Charcoal background filling the whole square", "One amber accent, everything else in muted greys", "Must read clearly at 64px"]
+# Things that must never appear.
+avoid = ["text or letters", "gradients, glow or 3D", "drop shadows", "photographic detail", "extra colours beyond the palette"]
+
+[palette]
+# name = "#RRGGBB"
+charcoal = "#1E2124"
+tile = "#3A3F45"
+amber = "#F5A623"
+
+[generate]
+provider = "chatgpt"  # chatgpt (free, via headfull), gemini, openai (paid APIs), mock (offline)
+# chatgpt takes up to 10 images per request (refs plus any --from image).
+size = "1K"           # gemini: 512, 1K, 2K, 4K. openai: 1K, or WxH
+aspect = "1:1"
+quality = "medium"    # openai only: low, medium, high
+
+[chatgpt]
+# ChatGPT project URL for this brand. Every image is made in a chat inside it,
+# so the brand's work stays together and out of the main ChatGPT history.
+# "none" for a one-off with no project; left empty, gen warns.
+project = "none"
+
+[budget]
+per_call_usd = 1.00
+daily_usd = 5.00
+
+[review]
+# agent: anyone may approve. human: approval needs a person at a terminal or
+# a click on the review page.
+mode = "agent"
+
+# Reference images. always = true attaches it to every generation.
+# role is one of: logo, mascot, example, reference.
